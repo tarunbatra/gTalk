@@ -2,8 +2,9 @@
 {
     margin-top:10%;
 }
-body {
-    background: #a5d1ff;
+body
+{
+    background: white;
 }
 
 [ng-click],
@@ -21,4 +22,17 @@ body {
 {
     background: #6373c1;
     color:whitesmoke;
+}
+
+.userList,.msgBox
+{
+    margin-top: 9vh;
+    border:solid black 1px;
+    min-height:80vh;
+    overflow-y: auto;
+}
+.header
+{
+    min-height:10vh;
+    border:solid black 1px;
 }

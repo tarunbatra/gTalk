@@ -1,4 +1,4 @@
-signUp.controller('signUpController',['$scope','apiService',function($scope,user)
+signUp.controller('signUpController',['$scope','$window','apiService',function($scope,$window,user)
 {
     console.log('signUpController');
     $scope.register=function()
@@ -25,6 +25,7 @@ signUp.controller('signUpController',['$scope','apiService',function($scope,user
             $scope.username = '';
             $scope.password = '';
             $scope.password2 = '';
+            $window.alert('Passwords don\'t match');
         }
     };
 }]);

@@ -7,5 +7,6 @@ index.controller('indexController',['$scope', function ($scope)
         location.href='#home';
     }
     $scope.login=true;
+    console.log($scope.data);
 
 }]);
