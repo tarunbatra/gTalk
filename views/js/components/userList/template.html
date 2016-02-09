@@ -1,0 +1,12 @@
+<div class="container-fluid">
+	<div class="list-group">
+		<div class="list-group-item active">
+			Users
+		</div>
+		<div class="userList">
+			<div ng-repeat="user in users">
+				<a class="list-group-item" ng-click="selected(user)">{{user.username}}</a>
+			</div>
+		</div>
+	</div>
+</div>

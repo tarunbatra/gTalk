@@ -1,1 +1,1 @@
-var home=angular.module('home',['app.components']);
+var home=angular.module('home',['app.components','app.core']);

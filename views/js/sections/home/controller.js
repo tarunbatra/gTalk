@@ -1,4 +1,4 @@
-home.controller('homeController',['$scope', function ($scope)
+home.controller('homeController',['$scope','apiService', function ($scope,user)
 {
 	console.log('homeController');
 

@@ -12,7 +12,6 @@ module.exports=function(req,res,next)
         else
         {
             console.log('Success');
-            req.body.data={username:req.body.username};
             next();
         }
     });

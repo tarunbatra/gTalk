@@ -11,9 +11,13 @@ api.factory('apiService',['$resource',function($resource)
                 method: 'POST',
                 url: '/user/sign_up'
             },
-            signOut: {
-                method: 'POST',
-                url: '/user/sign_out'
+            getAll: {
+                method: 'GET',
+                url: 'user/'
+            },
+            getOne: {
+                method: 'GET',
+                url:    'user/:id'
             }
         }
     );

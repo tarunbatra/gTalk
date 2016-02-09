@@ -5,13 +5,28 @@ var jwtGenerator=require('./../middlewares/jwtGenerator');
 var comparer=require('./../middlewares/comparer');
 var user=
 {
+    getAll:function(req,res,next)
+    {
+        console.log('getAll');
+        userDB.getAll(function(err,data)
+        {
+            responder(req,res,err,data);
+        });
+    },
+    getOne:function(req,res,next)
+    {
+        console.log('getAll');
+        userDB.getOne(req.params.id,function(err,data)
+        {
+            responder(req,res,err,data);
+        });
+    },
 	signIn:function(req,res,next)
 	{
 		console.log('signIn');
-        console.log(req.body.password);
 		userDB.signIn(
 			{
-				username:req.body.username,
+				username:req.body.username
 			},function(err,data)
 			{
 				if(err ||!data)
@@ -21,7 +36,8 @@ var user=
 				}
 				else
                 {
-                    req.body.hash=data.password;
+                    req.body.hash= data.password;
+                    req.body.data={username:data.username};
 					next();
 				}
 			});
@@ -29,7 +45,6 @@ var user=
 	signUp:function(req,res,next)
 	{
 		console.log('signUp');
-        console.log(req.body.password);
 		userDB.signUp(
 			{
 				username:req.body.username,
@@ -49,13 +64,24 @@ var user=
 					next();
 				}
 			});
-
-	}
+	},
+    send:function(req,res,next)
+    {
+        console.log("send");
+        var obj={};
+        obj.from=req.params.id1;
+        obj.to=req.params.id2;
+        obj.msg=req.body.msg;
+        obj.time=(new Date()).getTime();
+        responder(req,res,0,obj);
+    }
 };
 
 
 var router=require('express').Router();
-
+router.get('/',user.getAll);
+router.get('/:id',user.getOne);
 router.post('/sign_in',user.signIn,comparer,jwtGenerator);
 router.post('/sign_up',hasher,user.signUp,jwtGenerator);
+router.post('/:id1/send/:id2',user.send);
 module.exports=router;

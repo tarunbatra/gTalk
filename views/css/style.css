@@ -26,13 +26,13 @@ body
 
 .userList,.msgBox
 {
-    margin-top: 9vh;
-    border:solid black 1px;
-    min-height:80vh;
+    //border:solid black 1px;
+    height:75vh;
     overflow-y: auto;
 }
 .header
 {
-    min-height:10vh;
-    border:solid black 1px;
+	height:10vh;
+	padding:2vh;
+    //border:solid black 1px;
 }

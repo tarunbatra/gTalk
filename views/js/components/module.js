@@ -1,1 +1,1 @@
-var components=angular.module('app.components',['signIn','signUp']);
+var components=angular.module('app.components',['signIn','signUp','header','userList']);
