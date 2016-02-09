@@ -1,0 +1,23 @@
+<div class="panel-body" ng-app="signup" ng-controller="signUpController">
+    <div class="col-lg-8 col-lg-offset-2">
+        <form role="form" ng-submit="register()" class="register-form" id="register-form">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="username" ng-model="username" class="form-control" id="username2" tabindex="1" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" ng-model="password" class="form-control" id="password2" tabindex="2" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Confirm Password:</label>
+                <input type="password" ng-model="password2" class="form-control" id="passwordconfirm" tabindex="2" required>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-6 col-sm-offset-3 vertical-center">
+                    <input type="submit" name="register-submit" id="register-submit" tabindex="3" class="form-control btn btn-default" value="Register">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

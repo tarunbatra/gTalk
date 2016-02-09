@@ -1,0 +1,24 @@
+.forms
+{
+    margin-top:10%;
+}
+body {
+    background: #a5d1ff;
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
+.head
+{
+    background: #5d3b57;
+    color:whitesmoke;
+}
+.form-panel
+{
+    background: #6373c1;
+    color:whitesmoke;
+}
