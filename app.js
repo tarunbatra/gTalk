@@ -12,12 +12,10 @@ var express=require('express');
 var app=express();
 //create server
 var http=require('http').Server(app);
-
 app.use(express.static(__dirname + '/views'));
-
 //db
 db();
-//use
+//use middlewares
 app.use(cors,logger);
 app.use(multer().array());
 app.use(bodyParser.urlencoded({extended:false}));
@@ -26,14 +24,14 @@ app.use(bodyParser.json());
 
 //return index.js
 app.get('/',function(req, res){
-  res.sendFile(path.join(__dirname, '/views', 'index.html'));
+    res.sendFile(path.join(__dirname, '/views', 'index.html'));
 });
 //return user api
 app.use('/user',user);
 
 //listen server
 http.listen(3000, function(){
-  console.log('listening on *:3000');
+    console.log('listening on *:3000');
 });
 
 

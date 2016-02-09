@@ -1,6 +1,6 @@
 {
   "name": "gtalk",
-  "version":"1.0.0",
+  "version": "1.0.0",
   "description": "chat app",
   "main": "app.js",
   "scripts": {
@@ -17,6 +17,7 @@
   "author": "Tarun Batra <tarun.batra00@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
     "express-jwt": "^3.3.0",

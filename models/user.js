@@ -18,7 +18,7 @@ var model=mongoose.model('users',new Schema(
 
 model.signIn=function(data,cb)
 {
-	this.findOne({username:data.username,password:data.password},{_id:false,__v:false},function(err,data)
+	this.findOne({username:data.username},{_id:false,__v:false},function(err,data)
 	{
 		cb(err,data);
 	});
