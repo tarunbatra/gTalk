@@ -8,9 +8,13 @@ module.exports=function(io)
 		socket.on('connection',function(data)
 		{
 			console.log('connected '+data.username);
-
 			//for personal msgs
 			sockets[data.username]=socket;
+			user.getAll(function(err,d)
+			{
+				if(err) responder(req,res,err);
+				io.emit('notification',{users:d});
+			});
 		});
 		socket.on('disconnection',function(data)
 		{
@@ -50,14 +54,20 @@ module.exports=function(io)
 		socket.on('acceptReq',function(data)
 		{
 			console.log('acceptReq');
-			user.acceptReq(data,function(err)
+			//TODO:buggy
+		});
+
+		socket.on('rejectReq',function(data)
+		{
+			console.log('rejectReq');
+			user.rejectReq(data,function(err,d)
 			{
 				if(err) responder(req,res,err);
 				user.getAll(function(err,usersData)
 				{
 					if(err) responder(req,res,err);
-					sockets[data.from].emit('notification',{users:usersData,cause:data.to,code:3});
-					sockets[data.to.username].emit('notification',{users:usersData,cause:data.from,code:3});
+					sockets[data.from].emit('notification',{users:usersData,cause:data.to,code:0});
+					sockets[data.to.username].emit('notification',{users:usersData,cause:data.from,code:0});
 				});
 			});
 		});

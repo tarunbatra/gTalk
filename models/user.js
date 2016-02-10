@@ -104,40 +104,25 @@ model.cancelReq=function(data,cb)
 
 model.acceptReq=function(data,cb)
 {
+
+};
+
+model.rejectReq=function(data,cb)
+{
 	var dis=this;
 	model.getOne(data.from,function(e,d)
 	{
 		if(!e)
 		{
-			_.each(d.peers,function(p)
+			dis.findOneAndUpdate({_id:d._id},{$pull:{peers:{peerid:data.to._id}}},function(er,da)
 			{
-				if(p.peerid==data.to._id)
+				if(!er)
 				{
-					p.status=3;
-
-					d.save(function(er,doc,n)
+					dis.findOneAndUpdate({_id:data.to._id},{$pull:{peers:{peerid:d._id}}},function(rr,ta)
 					{
-						if(!er && n)
+						if(!rr)
 						{
-							model.getOne(data.to.username,function(eq,dq)
-							{
-								if (!eq) {
-									_.each(dq.peers, function (pq)
-									{
-										if (pq.peerid == d._id)
-										{
-											pq.status = 3;
-										}
-									});
-									dq.save(function (e, doc, n)
-									{
-										cb(e);
-									});
-								}
-								else {
-									cb(eq);
-								}
-							});
+							cb(er|rr,da);
 						}
 					});
 				}

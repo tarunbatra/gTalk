@@ -17,18 +17,20 @@ userList.controller('userListController',['$scope','apiService','socketService',
 	socket.on('notification',function(data)
 	{
 		console.log('notification');
-		$scope.users=data.users;
-		$scope.users= _.reject($scope.users,{username:me.username});
-		_.each($scope.users,function(u)
+		console.log(data.users);
+		$scope.$evalAsync(function()
 		{
-			if(u.username==data.cause)
+
+			$scope.users=data.users;
+			$scope.users= _.reject($scope.users,{username:me.username});
+			_.each($scope.users,function(u)
 			{
-				$scope.$evalAsync(function()
+				if(u.username==data.cause)
 				{
 					u.notify=true;
 					$scope.code=data.code;
-				});
-			}
+				}
+			});
 		});
 	});
 
