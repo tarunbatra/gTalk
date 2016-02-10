@@ -82,6 +82,8 @@ module.exports=function(io)
 		{
 			console.log('acceptReq');
 			//TODO:buggy
+
+
 		});
 
 		socket.on('rejectReq',function(data)
@@ -112,9 +114,8 @@ module.exports=function(io)
 
 		socket.on('newMessage',function(msgData)
 		{
-			user.getOne(msgData.from,function(err,userData)
+			user.getOne(msgData.from.username,function(err,userData)
 			{
-				msgData.from=userData._id;
 				user.addMsg(msgData,function(err)
 				{
 					if(err) responder(req,res,err);

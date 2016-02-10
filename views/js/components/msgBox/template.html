@@ -29,11 +29,11 @@
 	        </div>
 	        <div ng-show="status==3" class="text-center">
 		        <div class="">
-			        <form action="send(msg);msg='';" role="form">
+			        <form role="form" ng-submit="send()">
 				        <div class="input-group">
 					        <input ng-model="msg" autocomplete="off" type="text" class="form-control">
                             <span class="input-group-btn">
-	                            <button type="submit" class="btn btn-default" ng-click="send(msg);msg='';" >
+	                            <button type="submit" class="btn btn-default" >
 		                            <span class="glyphicon glyphicon-send"></span>
 	                            </button>
                             </span>

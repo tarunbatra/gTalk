@@ -5,14 +5,6 @@ var jwtGenerator=require('./../middlewares/jwtGenerator');
 var authenticator=require('./../middlewares/authenticator');
 var comparer=require('./../middlewares/comparer');
 
-
-var router=require('express').Router();
-router.get('/',user.getAll);
-router.get('/:id',user.getOne);
-router.post('/sign_in',user.signIn,comparer,jwtGenerator);
-router.post('/sign_up',hasher,user.signUp,jwtGenerator);
-module.exports=router;
-
 var user=
 {
     getAll:function(req,res,next)
@@ -72,3 +64,13 @@ var user=
 			});
 	}
 };
+
+
+
+var router=require('express').Router();
+router.get('/',user.getAll);
+router.get('/:id',user.getOne);
+router.post('/sign_in',user.signIn,comparer,jwtGenerator);
+router.post('/sign_up',hasher,user.signUp,jwtGenerator);
+module.exports=router;
+

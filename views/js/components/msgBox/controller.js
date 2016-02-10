@@ -3,16 +3,18 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
     console.log('msgBoxController');
 	var me=JSON.parse(localStorage.getItem('data'));
 
-	$scope.send=function(msg)
+	$scope.send=function()
 	{
 		var obj=
 		{
 			from    :   me,
 			to      :   $scope.peer,
-			msg     :   msg,
+			msg     :   $scope.msg,
 			time    :   (new Date()).getTime()
 		};
+		console.log(obj);
 		socket.emit('newMessage',obj);
+		msg='';
 	};
 
 

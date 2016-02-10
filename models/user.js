@@ -139,10 +139,11 @@ model.rejectReq=function(data,cb)
 model.addMsg=function(msgData,cb)
 {
 	var that=this;
-	model.getOne(data.from,function(error,userData)
+	model.getOne(msgData.from.username,function(error,userData)
 	{
 		if(!error)
 		{
+			console.log(JSON.stringify(userData));
 			_.filter(userData.peers,function(peer)
 			{
 				if(peer._id==msgData.to._id)
