@@ -7,11 +7,13 @@ var model=mongoose.model('users',new Schema(
 		username	:	{type:String,required:true, unique:true, dropDups:true},
 		password	:	{type:String,required:true},
 		peers       :
+
 			[{
 				peerid  	:	{type:Schema.Types.ObjectId, ref: 'users', required:true},
 				status      :   {type:Number, required:true},
 				notification:   {type:Boolean},
 				messages    :
+
 					[{
 						from    :   {type:Schema.Types.ObjectId, ref: 'users', required:true},
 						to      :   {type:Schema.Types.ObjectId, ref: 'users', required:true},
@@ -55,49 +57,50 @@ model.signUp=function(data,cb)
 
 model.sendReq=function(data,cb)
 {
-	var dis=this;
-	model.getOne(data.from,function(e,d)
+	var that=this;
+	model.getOne(data.from,function(error,userData)
 	{
-		if(!e)
+		if(!error)
 		{
-			dis.findOneAndUpdate({_id:d._id},{$addToSet:{peers:{peerid:data.to._id,status:1}}},function(er,da)
+			that.findOneAndUpdate({_id:userData._id},{$addToSet:{peers:{peerid:data.to._id,status:1}}},function(error)
 			{
-				if(!er)
+				if(!error)
 				{
-					dis.findOneAndUpdate({_id:data.to._id},{$addToSet:{peers:{peerid:d._id,status:2}}},function(rr,ta)
+					that.findOneAndUpdate({_id:data.to._id},{$addToSet:{peers:{peerid:userData._id,status:2}}},function(error)
 					{
-						if(!rr)
-						{
-							cb(er|rr,da);
-						}
+						cb(error);
 					});
 				}
+				cb(error);
 			});
 		}
+		cb(error);
 	});
 };
 
 model.cancelReq=function(data,cb)
 {
-	var dis=this;
-	model.getOne(data.from,function(e,d)
+	var that=this;
+	model.getOne(data.from,function(error,userData)
 	{
-		if(!e)
+		if(!error)
 		{
-			dis.findOneAndUpdate({_id:d._id},{$pull:{peers:{peerid:data.to._id}}},function(er,da)
+			that.findOneAndUpdate({_id:userData._id},{$pull:{peers:{peerid:data.to._id}}},function(error)
 			{
-				if(!er)
+				if(!error)
 				{
-					dis.findOneAndUpdate({_id:data.to._id},{$pull:{peers:{peerid:d._id}}},function(rr,ta)
+					that.findOneAndUpdate({_id:data.to._id},{$pull:{peers:{peerid:userData._id}}},function(rr)
 					{
-						if(!rr)
+						if(!error)
 						{
-							cb(er|rr,da);
+							cb(error);
 						}
 					});
 				}
+				cb(error);
 			});
 		}
+		cb(error);
 	});
 
 };
@@ -109,27 +112,55 @@ model.acceptReq=function(data,cb)
 
 model.rejectReq=function(data,cb)
 {
-	var dis=this;
-	model.getOne(data.from,function(e,d)
+	var that=this;
+	model.getOne(data.from,function(error,userData)
 	{
-		if(!e)
+		if(!error)
 		{
-			dis.findOneAndUpdate({_id:d._id},{$pull:{peers:{peerid:data.to._id}}},function(er,da)
+			that.findOneAndUpdate({_id:userData._id},{$pull:{peers:{peerid:data.to._id}}},function(error)
 			{
-				if(!er)
+				if(!error)
 				{
-					dis.findOneAndUpdate({_id:data.to._id},{$pull:{peers:{peerid:d._id}}},function(rr,ta)
+					that.findOneAndUpdate({_id:data.to._id},{$pull:{peers:{peerid:userData._id}}},function(error)
 					{
-						if(!rr)
+						if(!error)
 						{
-							cb(er|rr,da);
+							cb(error);
 						}
 					});
 				}
+				cb(error);
 			});
 		}
+		cb(error);
 	});
+};
 
+model.addMsg=function(msgData,cb)
+{
+	var that=this;
+	model.getOne(data.from,function(error,userData)
+	{
+		if(!error)
+		{
+			_.filter(userData.peers,function(peer)
+			{
+				if(peer._id==msgData.to._id)
+				{
+					peer.messages.push(msgData);
+				}
+			});
+			userData.save(function(err,document,effectedLines)
+			{
+				if(!err)
+				{
+					cb();
+				}
+				cb(err);
+			});
+		}
+		cb(error);
+	});
 };
 
 module.exports=model;

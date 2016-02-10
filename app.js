@@ -8,17 +8,22 @@ var user=require('./routes/user');
 var bodyParser=require('body-parser');
 var multer=require('multer');
 var path=require('path');
-//app
 var express=require('express');
 var app=express();
+
+
 //create server
 var http=require('http').Server(app);
 var io=require('socket.io')(http);
 socket(io);
+
+//serve static files
 app.use(express.static(__dirname + '/views'));
-//db
+
+//database connection
 db();
-//use middlewares
+
+//use required middlewares to peform housekeeping before actual routing
 app.use(cors,logger);
 app.use(multer().array());
 app.use(bodyParser.urlencoded({extended:false}));
@@ -29,6 +34,7 @@ app.use(bodyParser.json());
 app.get('/',function(req, res){
     res.sendFile(path.join(__dirname, '/views', 'index.html'));
 });
+
 //return user api
 app.use('/user',user);
 

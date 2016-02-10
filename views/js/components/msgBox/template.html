@@ -28,8 +28,25 @@
 		        </div>
 	        </div>
 	        <div ng-show="status==3" class="text-center">
-		        <div class="container">
-			        <div class="list-group-item msg" >hey this is a message</div>
+		        <div class="">
+			        <form action="send(msg);msg='';" role="form">
+				        <div class="input-group">
+					        <input ng-model="msg" autocomplete="off" type="text" class="form-control">
+                            <span class="input-group-btn">
+	                            <button type="submit" class="btn btn-default" ng-click="send(msg);msg='';" >
+		                            <span class="glyphicon glyphicon-send"></span>
+	                            </button>
+                            </span>
+				        </div>
+			        </form>
+		        </div>
+		        <div class="msgs container">
+			        <div ng-show="messages" ng-repeat="message in messages" class="container">
+				        <div class="list-group-item msg" >{{message}}</div>
+			        </div>
+			        <div ng-hide="messages.length">
+				        <div> No messages to show </div>
+			        </div>
 		        </div>
 	        </div>
         </div>

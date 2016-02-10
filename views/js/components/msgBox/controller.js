@@ -3,6 +3,19 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
     console.log('msgBoxController');
 	var me=JSON.parse(localStorage.getItem('data'));
 
+	$scope.send=function(msg)
+	{
+		var obj=
+		{
+			from    :   me,
+			to      :   $scope.peer,
+			msg     :   msg,
+			time    :   (new Date()).getTime()
+		};
+		socket.emit('newMessage',obj);
+	};
+
+
 	$scope.sendReq=function()
 	{
 		socket.emit('sendReq',{from:me.username,to:$scope.peer});
@@ -29,7 +42,8 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 	$scope.$watch(function($scope)
 	{
 		return $scope.peer;
-	},function(newVal,oldVal)
+	},
+	function(newVal,oldVal)
 	{
 		if(!newVal.username)
 		{
@@ -39,20 +53,18 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 		user.getOne({id:me.username},function(res)
 		{
 			var me=res.body;
-
-			/*
-				see if the user selected is a peer or not?
-				0:no
-				1:request sent
-				2:request received
-				3:approved
-			 */
-
-			var found= _.findWhere(me.peers,{peerid:$scope.peer._id});
+			var found= _.findWhere(me.peers,
+				{
+					peerid:$scope.peer._id
+				});
 			if(found)
 			{
 				console.log('found');
 				$scope.status=found.status;
+				$scope.status=3;
+				console.log(found);
+				$scope.messages=found.messages;
+
 			}
 			else
 			{

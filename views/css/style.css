@@ -26,7 +26,6 @@ body
 
 .userList,.msgBox
 {
-    //border:solid black 1px;
     height:75vh;
     overflow-y: auto;
 	background-color: #ffd4eb;
@@ -35,7 +34,6 @@ body
 {
 	height:10vh;
 	padding:2vh;
-    //border:solid black 1px;
 	background-color: #ffd4eb;
 }
 .msg
@@ -66,5 +64,11 @@ body
 	min-width:120px;
 	margin-left:40px;
 	margin-right:40px;
+}
 
+.msgs
+{
+	clear:both;
+	height:69vh;
+	overflow-y:auto;
 }

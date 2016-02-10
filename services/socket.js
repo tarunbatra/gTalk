@@ -10,12 +10,17 @@ module.exports=function(io)
 			console.log('connected '+data.username);
 			//for personal msgs
 			sockets[data.username]=socket;
-			user.getAll(function(err,d)
+
+			user.getAll(function(err,userData)
 			{
 				if(err) responder(req,res,err);
-				io.emit('notification',{users:d});
+				io.emit('notification',
+					{
+						users:userData
+					});
 			});
 		});
+
 		socket.on('disconnection',function(data)
 		{
 			delete sockets[data.username];
@@ -24,14 +29,25 @@ module.exports=function(io)
 		socket.on('sendReq',function(data)
 		{
 			console.log('sendReq');
-			user.sendReq(data,function(err,d)
+			user.sendReq(data,function(err)
 			{
 				if(err) responder(req,res,err);
 				user.getAll(function(err,usersData)
 				{
 					if(err) responder(req,res,err);
-					sockets[data.from].emit('notification',{users:usersData,cause:data.to,code:1});
-					sockets[data.to.username].emit('notification',{users:usersData,cause:data.from,code:2});
+
+					sockets[data.from].emit('notification',
+						{
+							users:usersData,
+							cause:data.to,
+							code:1
+						});
+					sockets[data.to.username].emit('notification',
+						{
+							users:usersData,
+							cause:data.from,
+							code:2
+						});
 				});
 			});
 		});
@@ -39,14 +55,25 @@ module.exports=function(io)
 		socket.on('cancelReq',function(data)
 		{
 			console.log('cancelReq');
-			user.cancelReq(data,function(err,d)
+			user.cancelReq(data,function(err)
 			{
 				if(err) responder(req,res,err);
 				user.getAll(function(err,usersData)
 				{
 					if(err) responder(req,res,err);
-					sockets[data.from].emit('notification',{users:usersData,cause:data.to,code:0});
-					sockets[data.to.username].emit('notification',{users:usersData,cause:data.from,code:0});
+
+					sockets[data.from].emit('notification',
+						{
+							users:usersData,
+							cause:data.to,
+							code:0
+						});
+					sockets[data.to.username].emit('notification',
+						{
+							users:usersData,
+							cause:data.from,
+							code:0
+						});
 				});
 			});
 		});
@@ -60,14 +87,38 @@ module.exports=function(io)
 		socket.on('rejectReq',function(data)
 		{
 			console.log('rejectReq');
-			user.rejectReq(data,function(err,d)
+			user.rejectReq(data,function(err)
 			{
 				if(err) responder(req,res,err);
 				user.getAll(function(err,usersData)
 				{
 					if(err) responder(req,res,err);
-					sockets[data.from].emit('notification',{users:usersData,cause:data.to,code:0});
-					sockets[data.to.username].emit('notification',{users:usersData,cause:data.from,code:0});
+
+					sockets[data.from].emit('notification',
+						{
+							users:usersData,
+							cause:data.to,
+							code:0
+						});
+					sockets[data.to.username].emit('notification',
+						{
+							users:usersData,
+							cause:data.from,
+							code:0
+						});
+				});
+			});
+		});
+
+		socket.on('newMessage',function(msgData)
+		{
+			user.getOne(msgData.from,function(err,userData)
+			{
+				msgData.from=userData._id;
+				user.addMsg(msgData,function(err)
+				{
+					if(err) responder(req,res,err);
+					console.log('msg added');
 				});
 			});
 		});
