@@ -107,7 +107,16 @@ model.cancelReq=function(data,cb)
 
 model.acceptReq=function(data,cb)
 {
-
+	model.findOneAndUpdate({'peers.peerid':data.to._id},{$set: {'peers.$.status':3}},function(err,userData)
+	{
+		if(!err)
+		{
+			model.update({'peers.peerid':userData._id},{$set: {'peers.$.status':3}},function(err)
+			{
+				cb(err);
+			});
+		}
+	});
 };
 
 model.rejectReq=function(data,cb)
@@ -117,7 +126,7 @@ model.rejectReq=function(data,cb)
 	{
 		if(!error)
 		{
-			that.findOneAndUpdate({_id:userData._id},{$pull:{peers:{peerid:data.to._id}}},function(error)
+			model.findOneAndUpdate({_id:userData._id},{$pull:{peers:{peerid:data.to._id}}},function(error)
 			{
 				if(!error)
 				{
@@ -138,30 +147,26 @@ model.rejectReq=function(data,cb)
 
 model.addMsg=function(msgData,cb)
 {
-	var that=this;
-	model.getOne(msgData.from.username,function(error,userData)
+	var ret={};
+	model.getOne(msgData.from.username,function(err,data)
 	{
-		if(!error)
+		if(!err)
 		{
-			console.log(JSON.stringify(userData));
-			_.filter(userData.peers,function(peer)
-			{
-				if(peer._id==msgData.to._id)
-				{
-					peer.messages.push(msgData);
-				}
-			});
-			userData.save(function(err,document,effectedLines)
+			msgData.from=data;
+			model.findOneAndUpdate({'peers.peerid':msgData.to._id},{$push: {'peers.$.messages':msgData}},function(err,userData)
 			{
 				if(!err)
 				{
-					cb();
+					model.update({'peers.peerid':userData._id},{$push: {'peers.$.messages':msgData}},function(err)
+					{
+						cb(err);
+					});
 				}
 				cb(err);
 			});
 		}
-		cb(error);
 	});
+
 };
 
 module.exports=model;

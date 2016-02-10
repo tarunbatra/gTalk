@@ -28,7 +28,7 @@
 		        </div>
 	        </div>
 	        <div ng-show="status==3" class="text-center">
-		        <div class="">
+		        <div>
 			        <form role="form" ng-submit="send()">
 				        <div class="input-group">
 					        <input ng-model="msg" autocomplete="off" type="text" class="form-control">
@@ -42,7 +42,9 @@
 		        </div>
 		        <div class="msgs container">
 			        <div ng-show="messages" ng-repeat="message in messages" class="container">
-				        <div class="list-group-item msg" >{{message}}</div>
+				        <div class="container-fluid list-group-item msg pull-{{peer._id==message.from?'left':'right'}}">
+					        {{message.msg}}
+				        </div>
 			        </div>
 			        <div ng-hide="messages.length">
 				        <div> No messages to show </div>

@@ -26,7 +26,7 @@ body
 
 .userList,.msgBox
 {
-    height:75vh;
+    height:77vh;
     overflow-y: auto;
 	background-color: #ffd4eb;
 }
@@ -71,4 +71,9 @@ body
 	clear:both;
 	height:69vh;
 	overflow-y:auto;
+}
+
+.test
+{
+	border:1px solid navy;
 }

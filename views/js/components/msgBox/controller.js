@@ -5,6 +5,7 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 
 	$scope.send=function()
 	{
+		if(!$scope.msg) return;
 		var obj=
 		{
 			from    :   me,
@@ -14,7 +15,8 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 		};
 		console.log(obj);
 		socket.emit('newMessage',obj);
-		msg='';
+		$scope.msg='';
+		$scope.messages.unshift(obj);
 	};
 
 
@@ -47,10 +49,6 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 	},
 	function(newVal,oldVal)
 	{
-		if(!newVal.username)
-		{
-			return;
-		}
 		var me=JSON.parse(localStorage.getItem('data'));
 		user.getOne({id:me.username},function(res)
 		{
@@ -63,9 +61,14 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 			{
 				console.log('found');
 				$scope.status=found.status;
-				$scope.status=3;
-				console.log(found);
-				$scope.messages=found.messages;
+				if(found.messages.length)
+				{
+					$scope.messages=found.messages;
+					$scope.messages= _.sortBy($scope.messages,function(message)
+					{
+						return (new Date())-(new Date(message.time));
+					});
+				}
 
 			}
 			else
