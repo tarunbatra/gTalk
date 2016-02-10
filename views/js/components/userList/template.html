@@ -1,11 +1,15 @@
 <div class="container-fluid">
 	<div class="list-group">
-		<div class="list-group-item active">
+		<div class="list-group-item active panel-title container">
 			Users
+			<span class="glyphicon glyphicon-user pull-right"></span>
 		</div>
 		<div class="userList">
 			<div ng-repeat="user in users">
-				<a class="list-group-item" ng-click="selected(user)">{{user.username}}</a>
+				<a class="list-group-item {{active==user?'active':''}}" ng-click="selected(user)">
+					{{user.username}}
+					<span ng-show="user.notify" class="glyphicon glyphicon-star-empty"></span>
+				</a>
 			</div>
 		</div>
 	</div>

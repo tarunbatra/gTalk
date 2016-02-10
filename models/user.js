@@ -1,5 +1,6 @@
 var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
+var _=require('underscore');
 
 var model=mongoose.model('users',new Schema(
 	{
@@ -9,6 +10,7 @@ var model=mongoose.model('users',new Schema(
 			[{
 				peerid  	:	{type:Schema.Types.ObjectId, ref: 'users', required:true},
 				status      :   {type:Number, required:true},
+				notification:   {type:Boolean},
 				messages    :
 					[{
 						from    :   {type:Schema.Types.ObjectId, ref: 'users', required:true},
@@ -49,6 +51,100 @@ model.signUp=function(data,cb)
 	{
 		cb(err);
 	});
+};
+
+model.sendReq=function(data,cb)
+{
+	var dis=this;
+	model.getOne(data.from,function(e,d)
+	{
+		if(!e)
+		{
+			dis.findOneAndUpdate({_id:d._id},{$addToSet:{peers:{peerid:data.to._id,status:1}}},function(er,da)
+			{
+				if(!er)
+				{
+					dis.findOneAndUpdate({_id:data.to._id},{$addToSet:{peers:{peerid:d._id,status:2}}},function(rr,ta)
+					{
+						if(!rr)
+						{
+							cb(er|rr,da);
+						}
+					});
+				}
+			});
+		}
+	});
+};
+
+model.cancelReq=function(data,cb)
+{
+	var dis=this;
+	model.getOne(data.from,function(e,d)
+	{
+		if(!e)
+		{
+			dis.findOneAndUpdate({_id:d._id},{$pull:{peers:{peerid:data.to._id}}},function(er,da)
+			{
+				if(!er)
+				{
+					dis.findOneAndUpdate({_id:data.to._id},{$pull:{peers:{peerid:d._id}}},function(rr,ta)
+					{
+						if(!rr)
+						{
+							cb(er|rr,da);
+						}
+					});
+				}
+			});
+		}
+	});
+
+};
+
+model.acceptReq=function(data,cb)
+{
+	var dis=this;
+	model.getOne(data.from,function(e,d)
+	{
+		if(!e)
+		{
+			_.each(d.peers,function(p)
+			{
+				if(p.peerid==data.to._id)
+				{
+					p.status=3;
+
+					d.save(function(er,doc,n)
+					{
+						if(!er && n)
+						{
+							model.getOne(data.to.username,function(eq,dq)
+							{
+								if (!eq) {
+									_.each(dq.peers, function (pq)
+									{
+										if (pq.peerid == d._id)
+										{
+											pq.status = 3;
+										}
+									});
+									dq.save(function (e, doc, n)
+									{
+										cb(e);
+									});
+								}
+								else {
+									cb(eq);
+								}
+							});
+						}
+					});
+				}
+			});
+		}
+	});
+
 };
 
 module.exports=model;

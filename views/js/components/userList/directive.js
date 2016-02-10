@@ -1,6 +1,11 @@
 userList.directive('userList',function()
 {
     return{
+        scope:
+        {
+            active:'=',
+            code:'='
+        },
         controller:'userListController',
         templateUrl:'js/components/userList/template.html'
     };

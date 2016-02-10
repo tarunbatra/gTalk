@@ -1,4 +1,4 @@
-home.controller('homeController',['$scope','apiService', function ($scope,user)
+home.controller('homeController',['$scope','apiService','socketService', function ($scope,user,socket)
 {
 	console.log('homeController');
 
@@ -6,6 +6,11 @@ home.controller('homeController',['$scope','apiService', function ($scope,user)
 	{
 		location.href='#index';
 	}
+	var me=JSON.parse(localStorage.getItem('data'));
+	user.getOne({id:me.username},function(res)
+	{
+		socket.emit('connection',me);
+	});
 }]);
 
 
@@ -13,6 +18,5 @@ home.controller('homeController',['$scope','apiService', function ($scope,user)
 
 	users from api {peers.elemMatch thisUser}
 	messages from api
-
 
  */

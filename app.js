@@ -1,5 +1,6 @@
 //require
 var db=require('./services/db');
+var socket=require('./services/socket');
 var cors=require('./middlewares/cors');
 var logger=require('./middlewares/logger');
 var errors=require('./routes/errors');
@@ -12,6 +13,8 @@ var express=require('express');
 var app=express();
 //create server
 var http=require('http').Server(app);
+var io=require('socket.io')(http);
+socket(io);
 app.use(express.static(__dirname + '/views'));
 //db
 db();

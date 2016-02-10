@@ -2,6 +2,7 @@ var hasher=require('./../middlewares/hasher');
 var responder=require('./../middlewares/responder');
 var userDB=require('./../models/user');
 var jwtGenerator=require('./../middlewares/jwtGenerator');
+var authenticator=require('./../middlewares/authenticator');
 var comparer=require('./../middlewares/comparer');
 var user=
 {
@@ -83,5 +84,5 @@ router.get('/',user.getAll);
 router.get('/:id',user.getOne);
 router.post('/sign_in',user.signIn,comparer,jwtGenerator);
 router.post('/sign_up',hasher,user.signUp,jwtGenerator);
-router.post('/:id1/send/:id2',user.send);
+router.post('/:id1/send/:id2',authenticator,user.send);
 module.exports=router;

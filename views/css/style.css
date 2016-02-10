@@ -29,10 +29,42 @@ body
     //border:solid black 1px;
     height:75vh;
     overflow-y: auto;
+	background-color: #ffd4eb;
 }
 .header
 {
 	height:10vh;
 	padding:2vh;
     //border:solid black 1px;
+	background-color: #ffd4eb;
+}
+.msg
+{
+    width:50%;
+    margin:20px;
+}
+
+.container
+{
+	width:100%;
+}
+
+
+.alert
+{
+	color: #772a4a;
+	font-family:Helvetica,Arial,sans-serif;
+	height:200px;
+	margin: auto;
+	position: absolute;
+	top: 0; left: 0; bottom: 0; right: 0;
+
+}
+
+.reqBtn
+{
+	min-width:120px;
+	margin-left:40px;
+	margin-right:40px;
+
 }

@@ -18,6 +18,10 @@ api.factory('apiService',['$resource',function($resource)
             getOne: {
                 method: 'GET',
                 url:    'user/:id'
+            },
+            addPeer:{
+                method:'PUT',
+                url:'user/:id/peer'
             }
         }
     );
