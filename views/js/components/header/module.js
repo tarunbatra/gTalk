@@ -1,1 +1,1 @@
-var header=angular.module('header',[]);
+var header=angular.module('header',['app.core']);

@@ -8,7 +8,7 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 		if(!$scope.msg) return;
 		var obj=
 		{
-			from    :   me,
+			from    :   me.username,
 			to      :   $scope.peer,
 			msg     :   $scope.msg,
 			time    :   (new Date()).getTime()

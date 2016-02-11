@@ -2,6 +2,20 @@ var sockets={};
 var user=require('./../models/user');
 var responder=require('./../middlewares/responder');
 var _=require('underscore');
+
+
+var emitNotif=function(type,to,data)
+{
+	try
+	{
+		sockets[to].emit(type,data);
+	}
+	catch(e)
+	{
+		console.log('User isn\'t online');
+	}
+};
+
 module.exports=function(io)
 {
 	io.on('connection',function(socket)
@@ -24,7 +38,12 @@ module.exports=function(io)
 
 		socket.on('disconnection',function(data)
 		{
-			delete sockets[data.username];
+			console.log('disconnected '+data);
+			try
+			{
+				delete sockets[data.username];
+			}
+			catch(e){}
 		});
 
 		socket.on('sendReq',function(data)
@@ -36,14 +55,13 @@ module.exports=function(io)
 				user.getAll(function(err,usersData)
 				{
 					if(err) console.log(err);
-
-					sockets[data.from].emit('notification',
+					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to,
+							cause:data.to.username,
 							code:1
 						});
-					sockets[data.to.username].emit('notification',
+					emitNotif('notification',data.to.username,
 						{
 							users:usersData,
 							cause:data.from,
@@ -62,14 +80,13 @@ module.exports=function(io)
 				user.getAll(function(err,usersData)
 				{
 					if(err) console.log(err);
-
-					sockets[data.from].emit('notification',
+					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to,
+							cause:data.to.username,
 							code:0
 						});
-					sockets[data.to.username].emit('notification',
+					emitNotif('notification',data.to.username,
 						{
 							users:usersData,
 							cause:data.from,
@@ -82,7 +99,7 @@ module.exports=function(io)
 		socket.on('acceptReq',function(data)
 		{
 			console.log('acceptReq');
-			//TODO:buggy
+			console.log(JSON.stringify(data));
 			user.acceptReq(data,function(err)
 			{
 				if(err) console.log(err);
@@ -90,14 +107,13 @@ module.exports=function(io)
 				user.getAll(function(err,usersData)
 				{
 					if(err) console.log(err);
-
-					sockets[data.from].emit('notification',
+					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to,
+							cause:data.to.username,
 							code:3
 						});
-					sockets[data.to.username].emit('notification',
+					emitNotif('notification',data.to.username,
 						{
 							users:usersData,
 							cause:data.from,
@@ -118,13 +134,13 @@ module.exports=function(io)
 				{
 					if(err) console.log(err);
 
-					sockets[data.from].emit('notification',
+					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to,
+							cause:data.to.username,
 							code:0
 						});
-					sockets[data.to.username].emit('notification',
+					emitNotif('notification',data.to.username,
 						{
 							users:usersData,
 							cause:data.from,
@@ -136,6 +152,8 @@ module.exports=function(io)
 
 		socket.on('newMessage',function(msgData)
 		{
+			var from=msgData.from;
+			var to=msgData.to.username;
 			user.addMsg(msgData,function(err)
 			{
 				if(err) console.log(err);
@@ -143,15 +161,14 @@ module.exports=function(io)
 				user.getAll(function(err,usersData)
 				{
 					if(err) console.log(err);
-					sockets[msgData.from.username].emit('notification',
+					emitNotif('notification',from,
 						{
 							users:usersData
 						});
-					sockets[msgData.to.username].emit('notification',
+					emitNotif('notification',to,
 						{
 							users:usersData,
-							cause:msgData.from.username,
-							code:3
+							cause:from
 						});
 				});
 			});
