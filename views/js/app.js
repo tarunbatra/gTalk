@@ -12,12 +12,34 @@ app.config(['$routeProvider',function($routeProvider)
         .when('/index',
             {
                 controller  :   'indexController',
-                templateUrl :   'js/sections/index/template.html'
+                templateUrl :   'js/sections/index/template.html',
+                resolve     :
+                {
+                    checkSession:function()
+                    {
+
+                        if(localStorage.getItem('data'))
+                        {
+                            location.href='#home';
+                        }
+                    }
+                }
             })
         .when('/home',
             {
                 controller  :   'homeController',
-                templateUrl :   'js/sections/home/template.html'
+                templateUrl :   'js/sections/home/template.html',
+                resolve     :
+                {
+                    checkSession:function()
+                    {
+
+                        if(!localStorage.getItem('data'))
+                        {
+                            location.href='#index';
+                        }
+                    }
+                }
             })
         .otherwise
         ({

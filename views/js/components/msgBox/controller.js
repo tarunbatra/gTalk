@@ -49,6 +49,7 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 	},
 	function(newVal,oldVal)
 	{
+		$scope.messages=[];
 		var me=JSON.parse(localStorage.getItem('data'));
 		user.getOne({id:me.username},function(res)
 		{
