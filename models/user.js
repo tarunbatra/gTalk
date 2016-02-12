@@ -112,7 +112,7 @@ model.rejectReq=function(data,cb)
 	{
 		if(!error)
 		{
-			that.findOneAndUpdate({_id:data.to},{$pull:{peers:{peerid:data.from}}},function(error)
+			model.findOneAndUpdate({_id:data.to},{$pull:{peers:{peerid:data.from}}},function(error)
 			{
 				cb(error);
 			});
