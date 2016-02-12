@@ -3,7 +3,7 @@ var responder=require('./responder');
 
 module.exports=function(req,res,next)
 {
-    bcrypt.compare(req.body.password,req.body.hash,function(err,res)
+    bcrypt.compare(req.body.password,req.body.hash,function(err)
     {
         if(err)
         {

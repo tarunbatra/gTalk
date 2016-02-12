@@ -4,7 +4,7 @@ home.controller('homeController',['$scope','apiService','socketService','checkSe
 	var me=JSON.parse(localStorage.getItem('data'));
 	user.getOne({id:me.username},function(res)
 	{
-		socket.emit('connection',me);
+		socket.emit('connection',res.body);
 	});
 }]);
 

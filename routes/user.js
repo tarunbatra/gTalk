@@ -17,7 +17,7 @@ var user=
 
     getOne:function(req,res,next)
     {
-        userDB.getOne(req.params.id,function(err,data)
+        userDB.getOneByUsername(req.params.id,function(err,data)
         {
             responder(req,res,err,data);
         });
@@ -33,7 +33,7 @@ var user=
 			{
 				if(err ||!data)
 				{
-					responder(req,res,err,data);
+					responder(req,res,err);
 				}
 				else
                 {

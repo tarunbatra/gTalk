@@ -5,37 +5,66 @@ userList.controller('userListController',['$scope','apiService','socketService',
 	var me=JSON.parse(localStorage.getItem('data'));
 	user.getAll(function(res)
 	{
-		$scope.users=res.body;
-		$scope.users= _.reject($scope.users,{username:me.username});
+		$scope.users= _.reject(res.body,{username:me.username});
 	});
+
 	$scope.selected=function(u)
 	{
-		$scope.active=u;
-		delete u.notify;
+		user.getOne({id:me.username},function(res)
+		{
+			me=res.body;
+			$scope.active=u;
+			var peer= _.findWhere(me.peers,{peerid: u._id});
+			$scope.code=peer?peer.status:0;
+			delete u.notify;
+			delete u.unread;
+		});
+
 	};
+
+	$scope.$watch(function()
+	{
+		return $scope.unread;
+	},
+	function(newVal,oldVal)
+	{
+		_.each($scope.users,function(user)
+		{
+			if(user._id!=$scope.active._id)
+				user.unread=newVal[user._id]?newVal[user._id]:0;
+		});
+	});
 
 	socket.on('notification',function(data)
 	{
 		console.log('notification');
 		$scope.$evalAsync(function()
 		{
-			$scope.users= _.reject(data.users,{username:me.username});
-			_.each($scope.users,function(u)
+			me=JSON.parse(localStorage.getItem('data'));
+			user.getOne({id:me.username},function(res)
 			{
-				if(u.username==data.cause) {
-					if ($scope.active.username != data.cause) {
-						u.notify = true;
+				me=res.body;
+				$scope.users= _.reject(data.users,{_id:me._id});
+				_.each($scope.users,function(u)
+				{
+					if(u._id==data.cause)
+					{
+						if ($scope.active._id != u._id)
+						{
+							u.notify = true;
+						}
+						if (data.code)
+						{
+							$scope.code = data.code;
+						}
+						if ($scope.active._id == u._id)
+						{
+							$scope.active=u;
+						}
 					}
-					if (data.code) {
-						$scope.code = data.code;
-					}
-					if ($scope.active.username == u.username) {
-						$scope.$evalAsync(function () {
-							$scope.active = u;
-						});
-					}
-				}
+				});
 			});
+
 		});
 	});
 

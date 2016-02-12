@@ -4,7 +4,8 @@ userList.directive('userList',function()
         scope:
         {
             active:'=',
-            code:'='
+            code:'=',
+            unread:'='
         },
         controller:'userListController',
         templateUrl:'js/components/userList/template.html'

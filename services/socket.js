@@ -1,11 +1,13 @@
 var sockets={};
 var user=require('./../models/user');
+var message=require('./../models/messages');
 var responder=require('./../middlewares/responder');
 var _=require('underscore');
 
 
 var emitNotif=function(type,to,data)
 {
+	console.log(JSON.stringify(data));
 	try
 	{
 		sockets[to].emit(type,data);
@@ -24,8 +26,11 @@ module.exports=function(io)
 		{
 			console.log('connected '+data.username);
 			//for personal msgs
-			sockets[data.username]=socket;
-
+			sockets[data._id]=socket;
+			user.setOnline(data.username,true,function(error)
+			{
+				if(error) console.log(error);
+			});
 			user.getAll(function(err,userData)
 			{
 				if(err) console.log(err);
@@ -39,11 +44,18 @@ module.exports=function(io)
 		socket.on('disconnection',function(data)
 		{
 			console.log('disconnected '+data);
-			try
+			user.setOnline(data,false,function(error)
 			{
-				delete sockets[data.username];
-			}
-			catch(e){}
+				if(error) console.log(error);
+			});
+			user.getAll(function(err,userData)
+			{
+				if(err) console.log(err);
+				io.emit('notification',
+					{
+						users:userData
+					});
+			});
 		});
 
 		socket.on('sendReq',function(data)
@@ -52,16 +64,17 @@ module.exports=function(io)
 			user.sendReq(data,function(err)
 			{
 				if(err) console.log(err);
+
 				user.getAll(function(err,usersData)
 				{
 					if(err) console.log(err);
 					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to.username,
+							cause:data.to,
 							code:1
 						});
-					emitNotif('notification',data.to.username,
+					emitNotif('notification',data.to,
 						{
 							users:usersData,
 							cause:data.from,
@@ -83,10 +96,10 @@ module.exports=function(io)
 					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to.username,
+							cause:data.to,
 							code:0
 						});
-					emitNotif('notification',data.to.username,
+					emitNotif('notification',data.to,
 						{
 							users:usersData,
 							cause:data.from,
@@ -99,7 +112,6 @@ module.exports=function(io)
 		socket.on('acceptReq',function(data)
 		{
 			console.log('acceptReq');
-			console.log(JSON.stringify(data));
 			user.acceptReq(data,function(err)
 			{
 				if(err) console.log(err);
@@ -110,10 +122,10 @@ module.exports=function(io)
 					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to.username,
+							cause:data.to,
 							code:3
 						});
-					emitNotif('notification',data.to.username,
+					emitNotif('notification',data.to,
 						{
 							users:usersData,
 							cause:data.from,
@@ -137,10 +149,10 @@ module.exports=function(io)
 					emitNotif('notification',data.from,
 						{
 							users:usersData,
-							cause:data.to.username,
+							cause:data.to,
 							code:0
 						});
-					emitNotif('notification',data.to.username,
+					emitNotif('notification',data.to,
 						{
 							users:usersData,
 							cause:data.from,
@@ -150,28 +162,42 @@ module.exports=function(io)
 			});
 		});
 
-		socket.on('newMessage',function(msgData)
+
+		socket.on('addMessage', function (msgData)
 		{
-			var from=msgData.from;
-			var to=msgData.to.username;
-			user.addMsg(msgData,function(err)
+			console.log('adding message');
+			message.add(msgData,function(err)
 			{
 				if(err) console.log(err);
-
-				user.getAll(function(err,usersData)
+				message.get(msgData.from,msgData.to,function(err,data)
 				{
-					if(err) console.log(err);
-					emitNotif('notification',from,
-						{
-							users:usersData
-						});
-					emitNotif('notification',to,
-						{
-							users:usersData,
-							cause:from
-						});
+					emitNotif('newMessages',msgData.from,data);
+					emitNotif('newMessages',msgData.to,data);
+					console.log('msgs sent');
 				});
+
 			});
 		});
+		socket.on('getMessages',function(msgData)
+		{
+			console.log('getting messages');
+			console.log(JSON.stringify(msgData));
+			message.get(msgData.from,msgData.to,function(err,data)
+			{
+				emitNotif('newMessages',msgData.from,data);
+				emitNotif('newMessages',msgData.to,data);
+				console.log('msgs sent');
+			});
+		});
+
+		socket.on('readMessages',function(data)
+		{
+			console.log('reading messages');
+			message.read(data.from,data.to,function(err,d)
+			{
+				console.log('msgs read');
+			});
+		});
+
 	});
 };

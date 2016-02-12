@@ -5,7 +5,8 @@ msgBox.directive('msgBox',function()
 	    scope:
 	    {
 		    peer:'=',
-		    status:'='
+		    status:'=',
+		    count:'='
 	    },
         controller:'msgBoxController',
         templateUrl:'js/components/msgBox/template.html'

@@ -7,7 +7,9 @@
 		<div class="userList">
 			<div ng-repeat="user in users">
 				<a class="list-group-item {{active==user?'active':''}}" ng-click="selected(user)">
+					<span ng-show="user.online" class="glyphicon glyphicon-ok-circle"></span>
 					{{user.username}}
+					<span ng-show="user.unread>0" class="badge">{{user.unread}}</span>
 					<span ng-show="user.notify" class="glyphicon glyphicon-star-empty"></span>
 				</a>
 			</div>

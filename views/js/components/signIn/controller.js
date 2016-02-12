@@ -18,7 +18,6 @@ signIn.controller('signInController',['$scope','alertService','apiService',funct
 		    {
 			    if(res.body)
 			    {
-				    console.log(res.body)
 				    localStorage.setItem('data',JSON.stringify(res.body));
 				    location.href='#home';
 			    }
