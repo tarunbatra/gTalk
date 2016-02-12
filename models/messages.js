@@ -31,7 +31,7 @@ model.get=function(sender,receiver,cb)
 
 model.read=function(sender,receiver,cb)
 {
-	model.update({$or:[{from:sender,to:receiver},{from:receiver,to:sender}]},{$set:{read:true}},{multi:true},function(err)
+	model.update({from:sender,to:receiver},{$set:{read:true}},{multi:true},function(err)
 	{
 		cb(err);
 	});

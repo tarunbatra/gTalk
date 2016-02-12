@@ -1,14 +1,12 @@
 msgBox.controller('msgBoxController',['$scope','apiService','socketService',function($scope,user,socket)
 {
 
-    console.log('msgBoxController');
 	$scope.messages=[];
 	var me=JSON.parse(localStorage.getItem('data'));
 	user.getOne({id:me.username},function(res)
 	{
 		me=res.body;
 	});
-
 	$scope.send=function()
 	{
 		if(!$scope.msg) return;
@@ -65,36 +63,45 @@ msgBox.controller('msgBoxController',['$scope','apiService','socketService',func
 				$scope.status=found.status;
 				if($scope.status==3)
 				{
-					socket.emit('readMessages',{from:me._id,to:$scope.peer._id});
 					socket.emit('getMessages',{from:me._id,to:$scope.peer._id});
-					console.log('messages requested');
 				}
+			}
+			else
+			{
+				$scope.status=0;
 			}
 		});
 	});
 
 	socket.on('newMessages',function(data)
 	{
-		console.log('newMessages');
+		$scope.count={};
+		if(!data.length) return;
 		if($scope.peer._id==data[0].to || $scope.peer._id==data[0].from)
 		{
-			socket.emit('readMessages',{from:me._id,to:$scope.peer._id});
+			socket.emit('readMessages',{from:$scope.peer._id,to:me._id});
 		}
+		console.log($scope.messages);
 		$scope.$evalAsync(function()
 		{
 			$scope.messages= _.sortBy(data,function(msg)
 			{
 				return (new Date().getTime())-(new Date(msg.time)).getTime();
 			});
-
-			$scope.count={};
+			console.log($scope.count);
 			_.each(_.reject($scope.messages,{from:me._id}) ,function(msg)
 			{
 				if(!msg.read)
 				{
+					console.log(msg.msg +' is unread');
 					$scope.count[msg.from] ? $scope.count[msg.from]++ : $scope.count[msg.from]=1;
 				}
+				else
+				{
+					console.log(msg.msg +' is read');
+				}
 			});
+			console.log($scope.count);
 		});
 	});
 }]);

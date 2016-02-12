@@ -28,6 +28,7 @@ userList.controller('userListController',['$scope','apiService','socketService',
 	},
 	function(newVal,oldVal)
 	{
+		console.log('unread');
 		_.each($scope.users,function(user)
 		{
 			if(user._id!=$scope.active._id)
