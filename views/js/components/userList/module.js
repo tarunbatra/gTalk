@@ -1,1 +1,1 @@
-var userList=angular.module('userList',['app.core']);
+var userList = angular.module('userList', ['app.core']);

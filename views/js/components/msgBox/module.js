@@ -1,1 +1,1 @@
-var msgBox=angular.module('msgBox',['app.core']);
+var msgBox = angular.module('msgBox', ['app.core']);

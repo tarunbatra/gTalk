@@ -1,1 +1,1 @@
-var api=angular.module('api',['ngResource']);
+var api = angular.module('api', ['ngResource']);

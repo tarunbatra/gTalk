@@ -1,1 +1,1 @@
-var signIn=angular.module('signIn',['app.core']);
+var signIn = angular.module('signIn', ['app.core']);

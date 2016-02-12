@@ -1,7 +1,5 @@
-
-signUp.directive('signUp',function()
-{
-    return{
-        templateUrl:'js/components/signUp/template.html'
-    };
+signUp.directive('signUp', function() {
+  return {
+    templateUrl: 'js/components/signUp/template.html'
+  };
 });

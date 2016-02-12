@@ -1,1 +1,1 @@
-var alerts=angular.module('alerts',[]);
+var alerts = angular.module('alerts', []);

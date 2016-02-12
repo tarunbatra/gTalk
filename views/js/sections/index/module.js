@@ -1,1 +1,1 @@
-var index=angular.module('index',['app.components']);
+var index = angular.module('index', ['app.components']);

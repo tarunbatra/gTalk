@@ -1,4 +1,3 @@
-socket.factory('socketService',[function()
-{
-    return io.connect();
+socket.factory('socketService', [function() {
+  return io.connect();
 }]);

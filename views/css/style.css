@@ -69,11 +69,18 @@ body
 .msgs
 {
 	clear:both;
-	height:69vh;
+	height:72vh;
 	overflow-y:auto;
 }
 
 .test
 {
 	border:1px solid navy;
+}
+
+.form
+{
+	position:absolute;
+	bottom:15px;
+	width:92%;
 }

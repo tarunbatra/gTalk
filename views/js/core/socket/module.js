@@ -1,1 +1,1 @@
-var socket=angular.module('socket',[]);
+var socket = angular.module('socket', []);

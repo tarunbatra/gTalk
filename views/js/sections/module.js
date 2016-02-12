@@ -1,1 +1,1 @@
-var sections=angular.module('app.sections',['index','home']);
+var sections = angular.module('app.sections', ['index', 'home']);

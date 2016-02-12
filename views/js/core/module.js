@@ -1,1 +1,1 @@
-var core=angular.module('app.core',['api','socket','alerts']);
+var core = angular.module('app.core', ['api', 'socket', 'alerts']);
