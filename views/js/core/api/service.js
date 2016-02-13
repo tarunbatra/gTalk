@@ -17,6 +17,10 @@ api.factory('apiService', ['$resource', function($resource) {
     getOne: {
       method: 'GET',
       url: 'user/:id'
+    },
+    auth: {
+      method: 'POST',
+      url: 'user/auth'
     }
   });
 

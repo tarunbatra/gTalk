@@ -59,4 +59,5 @@ router.get('/', user.getAll);
 router.get('/:id', user.getOne);
 router.post('/sign_in', user.signIn, comparer, jwtGenerator);
 router.post('/sign_up', hasher, user.signUp, jwtGenerator);
+router.post('/auth', authenticator);
 module.exports = router;

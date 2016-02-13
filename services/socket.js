@@ -18,15 +18,15 @@ var emitNotif = function(type, to, data) {
 module.exports = function(io) {
   io.on('connection', function(socket) {
 
-		//user comes online
+    //user comes online
     socket.on('connection', function(data) {
       //for personal msgs
       sockets[data._id] = socket;
-			//sets user as online
+      //sets user as online
       user.setOnline(data.username, true, function(error) {
         if (error) console.log(error);
       });
-			//getting all users info and emitting to all
+      //getting all users info and emitting to all
       user.getAll(function(err, userData) {
         if (err) console.log(err);
         io.emit('notification', {
@@ -35,13 +35,13 @@ module.exports = function(io) {
       });
     });
 
-		//user goes offline
+    //user goes offline
     socket.on('disconnection', function(data) {
-			//sets user as offline
+      //sets user as offline
       user.setOnline(data, false, function(error) {
         if (error) console.log(error);
       });
-			//getting all users info and emitting to all
+      //getting all users info and emitting to all
       user.getAll(function(err, userData) {
         if (err) console.log(err);
         io.emit('notification', {
@@ -50,22 +50,22 @@ module.exports = function(io) {
       });
     });
 
-		//user A sends request to user B
+    //user A sends request to user B
     socket.on('sendReq', function(data) {
-			//send req
+      //send req
       user.sendReq(data, function(err) {
         if (err) console.log(err);
-				//getting all users info
+        //getting all users info
         user.getAll(function(err, usersData) {
           console.log(JSON.stringify(usersData));
           if (err) console.log(err);
-					//emitting users info to user A
+          //emitting users info to user A
           emitNotif('notification', data.from, {
             users: usersData,
             cause: data.to,
             code: 1
           });
-					//emitting users info to user B
+          //emitting users info to user B
           emitNotif('notification', data.to, {
             users: usersData,
             cause: data.from,
@@ -75,21 +75,21 @@ module.exports = function(io) {
       });
     });
 
-		//user A cancels request of user B
+    //user A cancels request of user B
     socket.on('cancelReq', function(data) {
-			//cancel req
+      //cancel req
       user.cancelReq(data, function(err) {
         if (err) console.log(err);
-				//getting users info
+        //getting users info
         user.getAll(function(err, usersData) {
           if (err) console.log(err);
-					//emitting users info to user B
+          //emitting users info to user B
           emitNotif('notification', data.from, {
             users: usersData,
             cause: data.to,
             code: 0
           });
-					//emitting users info to user A
+          //emitting users info to user A
           emitNotif('notification', data.to, {
             users: usersData,
             cause: data.from,
@@ -99,21 +99,21 @@ module.exports = function(io) {
       });
     });
 
-		//user A accept req of user B
+    //user A accept req of user B
     socket.on('acceptReq', function(data) {
-			//accept req
+      //accept req
       user.acceptReq(data, function(err) {
         if (err) console.log(err);
-				//getting users info
+        //getting users info
         user.getAll(function(err, usersData) {
           if (err) console.log(err);
-					//emitting users info to user A
+          //emitting users info to user A
           emitNotif('notification', data.from, {
             users: usersData,
             cause: data.to,
             code: 3
           });
-					//emitting users info to user B
+          //emitting users info to user B
           emitNotif('notification', data.to, {
             users: usersData,
             cause: data.from,
@@ -123,19 +123,19 @@ module.exports = function(io) {
       });
 
     });
-		//user A rejects req of user B
+    //user A rejects req of user B
     socket.on('rejectReq', function(data) {
       user.rejectReq(data, function(err) {
         if (err) console.log(err);
         user.getAll(function(err, usersData) {
           if (err) console.log(err);
-					//emits user info to user A
+          //emits user info to user A
           emitNotif('notification', data.from, {
             users: usersData,
             cause: data.to,
             code: 0
           });
-					//emits user info to user B
+          //emits user info to user B
           emitNotif('notification', data.to, {
             users: usersData,
             cause: data.from,
@@ -145,38 +145,37 @@ module.exports = function(io) {
       });
     });
 
-		//user A sends message to user B
+    //user A sends message to user B
     socket.on('addMessage', function(msgData) {
-			//add message
+      //add message
       message.add(msgData, function(err) {
         if (err) console.log(err);
-				//get messages
+        //get messages
         message.get(msgData.from, msgData.to, function(err, data) {
-					//emit to user A
+          //emit to user A
           emitNotif('newMessages', msgData.from, data);
-					//emit to user B
+          //emit to user B
           emitNotif('newMessages', msgData.to, data);
         });
 
       });
     });
 
-		//user A wants message reload
+    //user A wants message reload
     socket.on('getMessages', function(msgData) {
-			//get messages
+      //get messages
       message.get(msgData.from, msgData.to, function(err, data) {
-				//emit to user A
+        //emit to user A
         emitNotif('newMessages', msgData.from, data);
-				//emit to user B
+        //emit to user B
         emitNotif('newMessages', msgData.to, data);
       });
     });
 
-		//user A read msgs of user B
+    //user A read msgs of user B
     socket.on('readMessages', function(data) {
-			//read message
-      message.read(data.from, data.to, function(err, d) {
-      });
+      //read message
+      message.read(data.from, data.to, function(err, d) {});
     });
   });
 };
