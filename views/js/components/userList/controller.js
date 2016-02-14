@@ -6,14 +6,13 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       username: me.username
     });
   });
-
+  //function to select a user
   $scope.selected = function(u) {
     user.getOne({
       id: me.username
     }, function(res) {
       me = res.body;
-      $scope.$evalAsync(function()
-      {
+      $scope.$evalAsync(function() {
         $scope.active = u;
       })
       var peer = _.findWhere(me.peers, {
@@ -23,9 +22,8 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       delete u.notify;
       delete u.unread;
     });
-
   };
-
+  //function to watch change in unread messages
   $scope.$watch(function() {
       return $scope.unread;
     },
@@ -35,7 +33,7 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
           user.unread = newVal[user._id] ? newVal[user._id] : 0;
       });
     });
-
+  //handler to receive notifications
   socket.on('notification', function(data) {
     $scope.$evalAsync(function() {
       me = JSON.parse(localStorage.getItem('data'));
@@ -60,8 +58,6 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
           }
         });
       });
-
     });
   });
-
 }]);

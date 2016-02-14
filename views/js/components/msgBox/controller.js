@@ -1,5 +1,6 @@
 msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', function($scope, user, socket) {
 
+  //initialization
   $scope.messages = [];
   var me = JSON.parse(localStorage.getItem('data'));
   user.getOne({
@@ -7,6 +8,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   }, function(res) {
     me = res.body;
   });
+  //function to send messsage
   $scope.send = function() {
     if (!$scope.msg) return;
     var obj = {
@@ -17,15 +19,14 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     };
     socket.emit('addMessage', obj);
     $scope.msg = '';
-    $scope.messages.unshift(obj);
+    $scope.messages.push(obj);
     scrollBottom();
     socket.emit('getMessages', {
       from: me._id,
       to: $scope.peer._id
     });
   };
-
-
+  //function to send request
   $scope.sendReq = function() {
     socket.emit('sendReq', {
       from: me._id,
@@ -33,6 +34,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     });
     $scope.status = 1;
   };
+  //function to cancel request
   $scope.cancelReq = function() {
     socket.emit('cancelReq', {
       from: me._id,
@@ -40,6 +42,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     });
     $scope.status = 0;
   };
+  //function to accept request
   $scope.acceptReq = function() {
     socket.emit('acceptReq', {
       from: me._id,
@@ -47,6 +50,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     });
     $scope.status = 3;
   };
+  //function to reject request
   $scope.rejectReq = function() {
     socket.emit('rejectReq', {
       from: me._id,
@@ -54,7 +58,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     });
     $scope.status = 0;
   };
-
+  //function to watch change in selected user
   $scope.$watch(function($scope) {
     return $scope.peer;
   }, function(newVal, oldVal) {
@@ -79,7 +83,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
       }
     });
   });
-
+  //handler to receive new messages
   socket.on('newMessages', function(data) {
     $scope.$evalAsync(function() {
       $scope.count = {};
@@ -94,11 +98,6 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     }
     $scope.$evalAsync(function() {
       $scope.messages=data;
-      /*
-      $scope.messages = _.sortBy(data, function(msg) {
-        return (new Date().getTime()) - (new Date(msg.time)).getTime();
-      });
-      */
       _.each(_.reject($scope.messages, {
         from: me._id
       }), function(msg) {
@@ -110,8 +109,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     });
   });
 }]);
-
-
+//function to scroll to bottom
 var scrollBottom =function()
 {
   var d = document.getElementById('msgDiv');

@@ -17,5 +17,4 @@ home.controller('homeController', ['$scope', 'apiService', 'socketService', 'che
     localStorage.removeItem('data');
     location.href = '#index';
   }
-
 }]);
