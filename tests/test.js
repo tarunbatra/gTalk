@@ -1,3 +1,4 @@
+/*
 describe('homeTest', function () {
 
   beforeEach(module('home'));
@@ -26,3 +27,4 @@ describe('homeTest', function () {
   });
 
 });
+*/
