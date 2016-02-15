@@ -1,5 +1,4 @@
 signUp.controller('signUpController', ['$scope', 'alertService', 'apiService', function($scope, alert, user) {
-  console.log('signUpController');
   $scope.register = function() {
     console.log('Registering...');
     if ($scope.username.length < 5) {
@@ -19,7 +18,7 @@ signUp.controller('signUpController', ['$scope', 'alertService', 'apiService', f
           localStorage.setItem('data', JSON.stringify(res.body));
           location.href = '#home';
         } else {
-          alert.show('Try again');
+          alert.show(res.messages);
         }
       });
     } else {

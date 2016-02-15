@@ -1,5 +1,4 @@
 signIn.controller('signInController', ['$scope', 'alertService', 'apiService', function($scope, alert, user) {
-  console.log('signInController');
   $scope.login = function() {
     if ($scope.username.length < 5) {
       alert.show('Username should be 5 characters minimum');
@@ -17,7 +16,7 @@ signIn.controller('signInController', ['$scope', 'alertService', 'apiService', f
         } else {
           $scope.username = '';
           $scope.password = '';
-          alert.show('Try again');
+          alert.show(res.messages);
         }
       });
     }
