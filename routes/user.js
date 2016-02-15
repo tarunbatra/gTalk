@@ -23,8 +23,8 @@ var user = {
         username: req.body.username
       },
       function(err, data) {
-        if (err || !data) {
-          responder(req, res, err);
+        if (err||!data) {
+          responder(req, res, {msg:'Username doesn\'t exist'});
         } else {
           req.body.hash = data.password;
           req.body.data = {
@@ -41,6 +41,7 @@ var user = {
       },
       function(err) {
         if (err) {
+          err.msg='Username already exists';
           responder(req, res, err);
         } else {
           req.body.data = {
