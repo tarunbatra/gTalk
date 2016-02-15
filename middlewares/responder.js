@@ -6,5 +6,4 @@ module.exports = function(req, res, err, data) {
     messages: err ? err.msg : [],
     meta: null
   });
-
 }
