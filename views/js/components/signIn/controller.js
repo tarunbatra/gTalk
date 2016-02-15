@@ -1,10 +1,10 @@
 signIn.controller('signInController', ['$scope', 'alertService', 'apiService', function($scope, alert, user) {
-  $scope.warning='';
+  $scope.warning = '';
   $scope.login = function() {
     if ($scope.username.length < 5) {
-      $scope.warning='Username should be 5 characters minimum';
+      $scope.warning = 'Username should be 5 characters minimum';
     } else if ($scope.password.length < 8) {
-      $scope.warning='Password should be 8 characters minimum';
+      $scope.warning = 'Password should be 8 characters minimum';
     } else {
       var data = {
         username: $scope.username,
@@ -15,12 +15,12 @@ signIn.controller('signInController', ['$scope', 'alertService', 'apiService', f
           localStorage.setItem('data', JSON.stringify(res.body));
           location.href = '#home';
         } else {
-          $scope.warning=res.messages;
+          $scope.warning = res.messages;
         }
       });
-        $scope.username = '';
-        $scope.password = '';
-        alert.show($scope.warning);
     }
+    $scope.username = '';
+    $scope.password = '';
+    if ($scope.warning) alert.show($scope.warning);
   };
 }]);
