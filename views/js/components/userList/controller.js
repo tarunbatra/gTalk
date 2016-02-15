@@ -8,17 +8,22 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
   });
   //function to select a user
   $scope.selected = function(u) {
+    //update current user's data
     user.getOne({
       id: me.username
     }, function(res) {
       me = res.body;
+      //update the active user
       $scope.$evalAsync(function() {
         $scope.active = u;
       })
+      //retreive the peer entry of active user
       var peer = _.findWhere(me.peers, {
         peerid: u._id
       });
+      //update code of active user
       $scope.code = peer ? peer.status : 0;
+      //if the user is active, no notification and unread msgs
       delete u.notify;
       delete u.unread;
     });
@@ -37,26 +42,24 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
   socket.on('notification', function(data) {
     $scope.$evalAsync(function() {
       me = JSON.parse(localStorage.getItem('data'));
-      user.getOne({
-        id: me.username
-      }, function(res) {
-        me = res.body;
-        $scope.users = _.reject(data.users, {
-          _id: me._id
-        });
-        _.each($scope.users, function(u) {
-          if (u._id == data.cause) {
-            if ($scope.active._id != u._id) {
-              u.notify = true;
-            }
-            if (data.code) {
-              $scope.code = data.code;
-            }
-            if ($scope.active._id == u._id) {
-              $scope.active = u;
-            }
+      $scope.users = _.reject(data.users, {
+        username: me.username
+      });
+      //checking notifications for each user
+      _.each($scope.users, function(u) {
+        if (u._id == data.cause) {
+          if ($scope.active._id != u._id) {
+            u.notify = true;
           }
-        });
+          //assigning code to each user : 0:not connected ; 1:request sent ; 2:request received ; 3:request accepted
+          if (data.code) {
+            $scope.code = data.code;
+          }
+          //updating active user
+          if ($scope.active._id == u._id) {
+            $scope.active = u;
+          }
+        }
       });
     });
   });

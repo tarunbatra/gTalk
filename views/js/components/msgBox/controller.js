@@ -67,10 +67,12 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
       id: me.username
     }, function(res) {
       var me = res.body;
-      var found = _.findWhere(me.peers, {
+      var peerFound = _.findWhere(me.peers, {
         peerid: $scope.peer._id
       });
-      if (found) {
+      //if the active user is a peer of the current user
+      if (peerFound) {
+
         $scope.status = found.status;
         if ($scope.status == 3) {
           socket.emit('getMessages', {
