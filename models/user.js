@@ -27,9 +27,6 @@ var model = mongoose.model('users', new Schema({
     status: {
       type: Number,
       required: true
-    },
-    notification: {
-      type: Boolean
     }
   }]
 }));

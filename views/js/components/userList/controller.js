@@ -15,9 +15,9 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       me = res.body;
       //update the active user
       $scope.$evalAsync(function() {
-        $scope.active = u;
-      })
-      //retreive the peer entry of active user
+          $scope.active = u;
+        })
+        //retreive the peer entry of active user
       var peer = _.findWhere(me.peers, {
         peerid: u._id
       });
@@ -40,8 +40,8 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
     });
   //handler to receive notifications
   socket.on('notification', function(data) {
+    me = JSON.parse(localStorage.getItem('data'));
     $scope.$evalAsync(function() {
-      me = JSON.parse(localStorage.getItem('data'));
       $scope.users = _.reject(data.users, {
         username: me.username
       });
@@ -59,6 +59,23 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
           if ($scope.active._id == u._id) {
             $scope.active = u;
           }
+        }
+      });
+    });
+    //get initial msg data for unread count
+    user.getOne({
+      id: me.username
+    }, function(res) {
+      myAcc = res.body;
+      _.each($scope.users, function(u) {
+        var found = _.findWhere(myAcc.peers, {
+          peerid: u._id
+        });
+        if (found && found.status == 3) {
+          socket.emit('getMessages', {
+            from: myAcc._id,
+            to: u._id
+          });
         }
       });
     });

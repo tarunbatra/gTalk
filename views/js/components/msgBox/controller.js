@@ -62,7 +62,6 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   $scope.$watch(function($scope) {
     return $scope.peer;
   }, function(newVal, oldVal) {
-    console.log('peer changed');
     var me = JSON.parse(localStorage.getItem('data'));
     user.getOne({
       id: me.username
@@ -73,7 +72,6 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
       });
       //if the active user is a peer of the current user
       if (found) {
-
         $scope.status = found.status;
         if ($scope.status == 3) {
           socket.emit('getMessages', {
