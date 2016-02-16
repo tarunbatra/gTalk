@@ -92,30 +92,32 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     });
     if (!data.length) return;
     if ($scope.peer._id == data[0].to || $scope.peer._id == data[0].from) {
+      $scope.$evalAsync(function() {
+        $scope.messages = data;
+      });
       socket.emit('readMessages', {
         from: $scope.peer._id,
         to: me._id
       });
-    }
-    $scope.$evalAsync(function() {
-      $scope.messages=data;
-      _.each(_.reject($scope.messages, {
+      scrollBottom();
+    } else {
+      var messages = data;
+      _.each(_.reject(messages, {
         from: me._id
       }), function(msg) {
         if (!msg.read) {
-          $scope.count[msg.from] ? $scope.count[msg.from]++ : $scope.count[msg.from] = 1;
+          $scope.$evalAsync(function() {
+            $scope.count[msg.from] ? $scope.count[msg.from]++ : $scope.count[msg.from] = 1;
+          })
         }
-        scrollBottom();
       });
-    });
+    }
   });
 }]);
 //function to scroll to bottom
-var scrollBottom =function()
-{
+var scrollBottom = function() {
   var d = document.getElementById('msgDiv');
-
-  if(d.scrollHeight > d.clientHeight) {
+  if (d.scrollHeight > d.clientHeight) {
     d.scrollTop = d.scrollHeight - d.clientHeight;
   }
 };

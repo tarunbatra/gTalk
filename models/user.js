@@ -16,9 +16,7 @@ var model = mongoose.model('users', new Schema({
   online: {
     type: Boolean
   },
-  peers:
-
-    [{
+  peers: [{
     peerid: {
       type: Schema.Types.ObjectId,
       ref: 'users',
