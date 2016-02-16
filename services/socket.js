@@ -5,33 +5,15 @@ var _ = require('underscore');
 
 //object to store sockets - format : { _id : socket }
 var sockets = {};
-var globalIO;
 //function to emit event of type 'type' to 'to' with data 'data'
 var emitNotif = function(type, to, data) {
-  if (_.contains(sockets, to)) {
-    try {
-      sockets[to].emit(type, data);
-    } catch (e) {
-      console.log('User isn\'t online');
-      delete sockets[to];
-      user.setOnline({
-        _id: to
-      }, false, function(error) {
-        console.log('setting user offline');
-        if (error) console.log(error);
-      });
-      user.getAll(function(err, userData) {
-        console.log('getting all data');
-        if (err) console.log(err);
-        globalIO.emit('notification', {
-          users: userData
-        });
-      });
-    }
+  try {
+    sockets[to].emit(type, data);
+  } catch (e) {
+    console.log('User isn\'t online');
   }
 };
 module.exports = function(io) {
-  globalIO = io;
   io.on('connection', function(socket) {
     //user comes online
     socket.on('connection', function(data) {
