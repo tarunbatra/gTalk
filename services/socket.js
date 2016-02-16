@@ -168,8 +168,6 @@ module.exports = function(io) {
       message.get(msgData.from, msgData.to, function(err, data) {
         //emit to user A
         emitNotif('newMessages', msgData.from, data);
-        //emit to user B
-        emitNotif('newMessages', msgData.to, data);
       });
     });
 
