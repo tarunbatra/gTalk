@@ -11,6 +11,7 @@ var emitNotif = function(type, to, data) {
     sockets[to].emit(type, data);
   } catch (e) {
     console.log('User isn\'t online');
+    delete sockets[to];
   }
 };
 module.exports = function(io) {
