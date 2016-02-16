@@ -5,17 +5,28 @@ var _ = require('underscore');
 
 //object to store sockets - format : { _id : socket }
 var sockets = {};
-
+var globalIO;
 //function to emit event of type 'type' to 'to' with data 'data'
 var emitNotif = function(type, to, data) {
   try {
     sockets[to].emit(type, data);
   } catch (e) {
     console.log('User isn\'t online');
+    user.setOnline({_id:to}, false, function(error) {
+      console.log('setting user offline');
+      if (error) console.log(error);
+    });
+    user.getAll(function(err, userData) {
+      console.log('getting all data');
+      if (err) console.log(err);
+      globalIO.emit('notification', {
+        users: userData
+      });
+    });
   }
 };
-
 module.exports = function(io) {
+  globalIO=io;
   io.on('connection', function(socket) {
 
     //user comes online
@@ -23,7 +34,7 @@ module.exports = function(io) {
       //for personal msgs
       sockets[data._id] = socket;
       //sets user as online
-      user.setOnline(data.username, true, function(error) {
+      user.setOnline({username:data.username}, true, function(error) {
         if (error) console.log(error);
       });
       //getting all users info and emitting to all
@@ -38,7 +49,7 @@ module.exports = function(io) {
     //user goes offline
     socket.on('disconnection', function(data) {
       //sets user as offline
-      user.setOnline(data, false, function(error) {
+      user.setOnline({username:data}, false, function(error) {
         if (error) console.log(error);
       });
       //getting all users info and emitting to all

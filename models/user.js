@@ -194,12 +194,10 @@ model.rejectReq = function(data, cb) {
   });
 };
 
-model.setOnline = function(uname, onlineStatus, cb)
+model.setOnline = function(obj, onlineStatus, cb)
 
 {
-  model.findOneAndUpdate({
-    username: uname
-  }, {
+  model.findOneAndUpdate(obj, {
     $set: {
       online: onlineStatus
     }
