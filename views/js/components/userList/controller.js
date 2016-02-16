@@ -1,4 +1,4 @@
-userList.controller('userListController', ['$scope', 'apiService', 'socketService', function($scope, user, socket) {
+userList.controller('userListController', ['$scope', 'apiService', 'socketService', 'notificationService', function($scope, user, socket, notification) {
   $scope.active = {};
   var me = JSON.parse(localStorage.getItem('data'));
   user.getAll(function(res) {
@@ -26,6 +26,7 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       //if the user is active, no notification and unread msgs
       delete u.notify;
       delete u.unread;
+      scrollToBottom(5);
     });
   };
   //function to watch change in unread messages
@@ -34,8 +35,13 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
     },
     function(newVal, oldVal) {
       _.each($scope.users, function(user) {
-        if (user._id != $scope.active._id)
+        if (user._id != $scope.active._id) {
           user.unread = newVal[user._id] ? newVal[user._id] : 0;
+          if(user.unread>1)
+          notification.show('Unread Messages!','You have '+user.unread+' unread messages from '+user.username);
+          else if(user.unread==1)
+          notification.show('Unread Messages!','You have an unread message from '+user.username);
+        }
       });
     });
   //handler to receive notifications
@@ -50,6 +56,9 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
         if (u._id == data.cause) {
           if ($scope.active._id != u._id) {
             u.notify = true;
+          }
+          if (notification.userAway) {
+            notification.show('New Notification!', 'You have a new notification from ' + u.username);
           }
           //assigning code to each user : 0:not connected ; 1:request sent ; 2:request received ; 3:request accepted
           if (data.code) {

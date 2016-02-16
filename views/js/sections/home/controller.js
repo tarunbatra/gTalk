@@ -18,3 +18,8 @@ home.controller('homeController', ['$scope', 'apiService', 'socketService', 'che
     location.href = '#index';
   }
 }]);
+
+document.addEventListener('DOMContentLoaded', function () {
+  if (Notification.permission !== "granted")
+    Notification.requestPermission();
+});

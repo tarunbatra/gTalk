@@ -20,11 +20,11 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     socket.emit('addMessage', obj);
     $scope.msg = '';
     $scope.messages.push(obj);
-    scrollBottom();
     socket.emit('getMessages', {
       from: me._id,
       to: $scope.peer._id
     });
+    scrollToBottom(5);
   };
   //function to send request
   $scope.sendReq = function() {
@@ -74,6 +74,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
       if (found) {
         $scope.status = found.status;
         if ($scope.status == 3) {
+          scrollToBottom(5);
           socket.emit('getMessages', {
             from: me._id,
             to: $scope.peer._id
@@ -86,21 +87,19 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   });
   //handler to receive new messages
   socket.on('newMessages', function(data) {
-    $scope.$evalAsync(function() {
-      $scope.count = {};
-      $scope.messages = [];
-    });
     if (!data.length) return;
     if ($scope.peer._id == data[0].to || $scope.peer._id == data[0].from) {
       $scope.$evalAsync(function() {
         $scope.messages = data;
+        console.log('new messages');
+        scrollToBottom(5);
       });
       socket.emit('readMessages', {
         from: $scope.peer._id,
         to: me._id
       });
-      scrollBottom();
     } else {
+      $scope.count = {};
       var messages = data;
       _.each(_.reject(messages, {
         from: me._id
@@ -115,9 +114,14 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   });
 }]);
 //function to scroll to bottom
-var scrollBottom = function() {
+var scrollToBottom = function(n) {
   var d = document.getElementById('msgDiv');
   if (d.scrollHeight > d.clientHeight) {
     d.scrollTop = d.scrollHeight - d.clientHeight;
+    if (n > 0) {
+      setTimeout(function() {
+        scrollToBottom(n - 1);
+      }, 50);
+    }
   }
 };

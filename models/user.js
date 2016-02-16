@@ -77,7 +77,6 @@ model.signUp = function(data, cb) {
 };
 
 model.sendReq = function(data, cb) {
-  console.log(JSON.stringify(data));
   model.findOneAndUpdate({
     _id: data.from
   }, {
@@ -103,10 +102,10 @@ model.sendReq = function(data, cb) {
       }, {
         upsert: false
       }, function(error, userData) {
-        cb(error);
+        if(error) console.log(error);
       });
     }
-    cb(error);
+    cb(error,userData);
   });
 };
 
@@ -130,9 +129,7 @@ model.cancelReq = function(data, cb) {
           }
         }
       }, function(rr) {
-        if (!error) {
-          cb(error);
-        }
+        if (rr)console.log(rr);
       });
     }
     cb(error);
@@ -158,7 +155,7 @@ model.acceptReq = function(data, cb) {
           'peers.$.status': 3
         }
       }, function(err) {
-        cb(err);
+        if(err)console.log(err);
       });
     }
     cb(err);
@@ -185,7 +182,7 @@ model.rejectReq = function(data, cb) {
           }
         }
       }, function(error) {
-        cb(error);
+        if(error) console.log(error);
       });
     }
     cb(error);
@@ -202,7 +199,6 @@ model.setOnline = function(obj, onlineStatus, cb)
   }, {
     upsert: false
   }, function(error, data) {
-    console.log(JSON.stringify(data));
     cb(error);
   });
 }

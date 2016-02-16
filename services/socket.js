@@ -59,13 +59,10 @@ module.exports = function(io) {
         if (err) console.log(err);
         //getting all users info
         user.getAll(function(err, usersData) {
-          console.log(JSON.stringify(usersData));
           if (err) console.log(err);
           //emitting users info to user A
           emitNotif('notification', data.from, {
-            users: usersData,
-            cause: data.to,
-            code: 1
+            users: usersData
           });
           //emitting users info to user B
           emitNotif('notification', data.to, {
@@ -85,13 +82,11 @@ module.exports = function(io) {
         //getting users info
         user.getAll(function(err, usersData) {
           if (err) console.log(err);
-          //emitting users info to user B
-          emitNotif('notification', data.from, {
-            users: usersData,
-            cause: data.to,
-            code: 0
-          });
           //emitting users info to user A
+          emitNotif('notification', data.from, {
+            users: usersData
+          });
+          //emitting users info to user B
           emitNotif('notification', data.to, {
             users: usersData,
             cause: data.from,
@@ -111,9 +106,7 @@ module.exports = function(io) {
           if (err) console.log(err);
           //emitting users info to user A
           emitNotif('notification', data.from, {
-            users: usersData,
-            cause: data.to,
-            code: 3
+            users: usersData
           });
           //emitting users info to user B
           emitNotif('notification', data.to, {
@@ -133,9 +126,7 @@ module.exports = function(io) {
           if (err) console.log(err);
           //emits user info to user A
           emitNotif('notification', data.from, {
-            users: usersData,
-            cause: data.to,
-            code: 0
+            users: usersData
           });
           //emits user info to user B
           emitNotif('notification', data.to, {
