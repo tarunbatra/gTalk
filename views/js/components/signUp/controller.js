@@ -1,6 +1,7 @@
 signUp.controller('signUpController', ['$scope', 'alertService', 'apiService', function($scope, alert, user) {
   $scope.warning = '';
   $scope.register = function() {
+    $scope.warning='';
     if ($scope.username.length < 5) {
       $scope.warning = 'Username should be 5 characters minimum';
     } else if ($scope.password.length < 8) {

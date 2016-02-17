@@ -2,17 +2,17 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
 
   //initialization
   $scope.messages = [];
-  var me = JSON.parse(localStorage.getItem('data'));
+  $scope.me = JSON.parse(localStorage.getItem('data'));
   user.getOne({
-    id: me.username
+    id: $scope.me.username
   }, function(res) {
-    me = res.body;
+    $scope.me = res.body;
   });
   //function to send messsage
   $scope.send = function() {
     if (!$scope.msg) return;
     var obj = {
-      from: me._id,
+      from: $scope.me._id,
       to: $scope.peer._id,
       msg: $scope.msg,
       time: (new Date()).getTime()
@@ -21,7 +21,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
     $scope.msg = '';
     $scope.messages.push(obj);
     socket.emit('getMessages', {
-      from: me._id,
+      from: $scope.me._id,
       to: $scope.peer._id
     });
     scrollToBottom(5);
@@ -29,7 +29,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   //function to send request
   $scope.sendReq = function() {
     socket.emit('sendReq', {
-      from: me._id,
+      from: $scope.me._id,
       to: $scope.peer._id
     });
     $scope.status = 1;
@@ -37,7 +37,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   //function to cancel request
   $scope.cancelReq = function() {
     socket.emit('cancelReq', {
-      from: me._id,
+      from: $scope.me._id,
       to: $scope.peer._id
     });
     $scope.status = 0;
@@ -45,7 +45,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   //function to accept request
   $scope.acceptReq = function() {
     socket.emit('acceptReq', {
-      from: me._id,
+      from: $scope.me._id,
       to: $scope.peer._id
     });
     $scope.status = 3;
@@ -53,7 +53,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   //function to reject request
   $scope.rejectReq = function() {
     socket.emit('rejectReq', {
-      from: me._id,
+      from: $scope.me._id,
       to: $scope.peer._id
     });
     $scope.status = 0;
@@ -62,12 +62,12 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
   $scope.$watch(function($scope) {
     return $scope.peer;
   }, function(newVal, oldVal) {
-    var me = JSON.parse(localStorage.getItem('data'));
+    $scope.me = JSON.parse(localStorage.getItem('data'));
     user.getOne({
-      id: me.username
+      id: $scope.me.username
     }, function(res) {
-      var me = res.body;
-      var found = _.findWhere(me.peers, {
+      $scope.me = res.body;
+      var found = _.findWhere($scope.me.peers, {
         peerid: $scope.peer._id
       });
       //if the active user is a peer of the current user
@@ -76,7 +76,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
         if ($scope.status == 3) {
           scrollToBottom(5);
           socket.emit('getMessages', {
-            from: me._id,
+            from: $scope.me._id,
             to: $scope.peer._id
           });
         }
@@ -96,7 +96,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
       });
       socket.emit('readMessages', {
         from: $scope.peer._id,
-        to: me._id
+        to: $scope.me._id
       });
     } else {
       $scope.count = {};
@@ -118,7 +118,7 @@ var scrollToBottom = function(n) {
   var d = document.getElementById('msgDiv');
   if (d.scrollHeight > d.clientHeight) {
     d.scrollTop = d.scrollHeight - d.clientHeight;
-    if (n > 0) {
+    if (n) {
       setTimeout(function() {
         scrollToBottom(n - 1);
       }, 50);

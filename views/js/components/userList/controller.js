@@ -1,18 +1,22 @@
 userList.controller('userListController', ['$scope', 'apiService', 'socketService', 'notificationService', function($scope, user, socket, notification) {
   $scope.active = {};
-  var me = JSON.parse(localStorage.getItem('data'));
+  $scope.me = JSON.parse(localStorage.getItem('data'));
   user.getAll(function(res) {
     $scope.users = _.reject(res.body, {
-      username: me.username
+      username: $scope.me.username
     });
   });
   //function to select a user
   $scope.selected = function(u) {
+    //if the user is active, no notification and unread msgs
+    delete u.notify;
+    delete u.unread;
+    $scope.active = u;
     //update current user's data
     user.getOne({
-      id: me.username
+      id: $scope.me.username
     }, function(res) {
-      me = res.body;
+      $scope.me = res.body;
       //update the active user
       $scope.$evalAsync(function() {
           $scope.active = u;
@@ -23,9 +27,7 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       });
       //update code of active user
       $scope.code = peer ? peer.status : 0;
-      //if the user is active, no notification and unread msgs
-      delete u.notify;
-      delete u.unread;
+
       scrollToBottom(5);
     });
   };
@@ -37,19 +39,19 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       _.each($scope.users, function(user) {
         if (user._id != $scope.active._id) {
           user.unread = newVal[user._id] ? newVal[user._id] : 0;
-          if(user.unread>1)
-          notification.show('Unread Messages!','You have '+user.unread+' unread messages from '+user.username);
-          else if(user.unread==1)
-          notification.show('Unread Messages!','You have an unread message from '+user.username);
+          if (user.unread > 1)
+            notification.show('Unread Messages!', 'You have ' + user.unread + ' unread messages from ' + user.username);
+          else if (user.unread == 1)
+            notification.show('Unread Messages!', 'You have an unread message from ' + user.username);
         }
       });
     });
   //handler to receive notifications
   socket.on('notification', function(data) {
-    me = JSON.parse(localStorage.getItem('data'));
+    $scope.me = JSON.parse(localStorage.getItem('data'));
     $scope.$evalAsync(function() {
       $scope.users = _.reject(data.users, {
-        username: me.username
+        username: $scope.me.username
       });
       //checking notifications for each user
       _.each($scope.users, function(u) {
@@ -60,20 +62,19 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
           if (notification.userAway) {
             notification.show('New Notification!', 'You have a new notification from ' + u.username);
           }
-          //assigning code to each user : 0:not connected ; 1:request sent ; 2:request received ; 3:request accepted
-          if (data.code) {
-            $scope.code = data.code;
-          }
           //updating active user
           if ($scope.active._id == u._id) {
             $scope.active = u;
+            if (data.code) {
+              $scope.code = data.code;
+            }
           }
         }
       });
     });
     //get initial msg data for unread count
     user.getOne({
-      id: me.username
+      id: $scope.me.username
     }, function(res) {
       myAcc = res.body;
       _.each($scope.users, function(u) {
