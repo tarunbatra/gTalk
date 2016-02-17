@@ -22,5 +22,6 @@ signIn.controller('signInController', ['$scope', 'alertService', 'apiService', f
     $scope.username = '';
     $scope.password = '';
     if ($scope.warning) alert.show($scope.warning);
+    $scope.warning='';
   };
 }]);

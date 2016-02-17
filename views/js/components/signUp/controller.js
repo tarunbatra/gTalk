@@ -25,5 +25,6 @@ signUp.controller('signUpController', ['$scope', 'alertService', 'apiService', f
     $scope.password = '';
     $scope.password2 = '';
     if ($scope.warning) alert.show($scope.warning);
+    $scope.warning='';
   };
 }]);
