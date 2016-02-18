@@ -56,8 +56,7 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
         if (u._id == data.cause) {
           if ($scope.active._id != u._id) {
             u.notify = true;
-          }
-          else{
+          } else {
             $scope.active = u;
             if (data.code) {
               $scope.code = data.code;

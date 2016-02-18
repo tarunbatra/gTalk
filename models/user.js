@@ -7,7 +7,7 @@ var model = mongoose.model('users', new Schema({
     type: String,
     required: true,
     unique: true,
-    dropDups: true
+    index: true
   },
   password: {
     type: String,
@@ -30,7 +30,7 @@ var model = mongoose.model('users', new Schema({
 }));
 
 model.getAll = function(cb) {
-  this.find({}, {
+  model.find({}, {
     __v: false,
     password: false
   }, function(err, data) {
@@ -39,7 +39,7 @@ model.getAll = function(cb) {
 };
 
 model.getOneByUsername = function(uname, cb) {
-  this.findOne({
+  model.findOne({
     username: uname
   }, {
     __v: false,
@@ -50,7 +50,7 @@ model.getOneByUsername = function(uname, cb) {
 };
 
 model.getOneById = function(id, cb) {
-  this.findOne({
+  model.findOne({
     _id: id
   }, {
     __v: false,
@@ -61,7 +61,7 @@ model.getOneById = function(id, cb) {
 }
 
 model.signIn = function(data, cb) {
-  this.findOne({
+  model.findOne({
     username: data.username
   }, {
     __v: false

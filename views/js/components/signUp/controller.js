@@ -1,6 +1,6 @@
-signUp.controller('signUpController', ['$scope', 'alertService', 'apiService','validationService', function($scope, alert, user,validator) {
+signUp.controller('signUpController', ['$scope', 'alertService', 'apiService', 'validationService', function($scope, alert, user, validator) {
   $scope.register = function() {
-    var signUpData=validator.signUp($scope.formData);
+    var signUpData = validator.signUp($scope.formData);
     if (signUpData.isValid) {
       user.signUp($scope.formData, function(res) {
         if (res.body) {
