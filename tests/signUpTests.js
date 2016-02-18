@@ -1,104 +1,41 @@
-describe('signUpTest', function() {
-  beforeEach(module('app.core'));
-  beforeEach(module('signUp'));
+describe('validatorTest', function() {
 
-  var $controller;
+  beforeEach(module('validator'));
 
-  module(function($provide) {
-    $provide.service('alertService', function() {
-      return {
-        show: function(msg) {
-          console.log(msg);
-        }
-      };
-    });
-  });
-  module(function($provide) {
-    $provide.factory('apiService', ['$q', function($q) {
-      function save(data) {
-        if (passPromise) {
-          return $q.when();
-        } else {
-          return $q.reject();
-        }
-      }
-      return {
-        signIn: save
-      };
-    }]);
-  });
-
-
-  beforeEach(inject(function(_$controller_) {
-    $controller = _$controller_;
+  var validationService;
+  beforeEach(inject(function (_validationService_) {
+    validationService=_validationService_;
   }));
 
-  describe('username should be 5 characters minimum', function() {
-    it('less than 5 should not work', function() {
-      var $scope = {};
-      var controller = $controller('signUpController', {
-        $scope: $scope
-      });
-      $scope.username = '1234';
-      $scope.register();
-      expect($scope.warning).toBe('Username should be 5 characters minimum');
-    });
-    it('greater than equal to 5 should work', function() {
-      var $scope = {};
-      var controller = $controller('signUpController', {
-        $scope: $scope
-      });
-      $scope.username = '12345';
-      $scope.password = '12345';
-      $scope.register();
-      expect($scope.warning).not.toBe('Username should be 5 characters minimum');
-    });
+  it('if username is less than 5 characters', function() {
+    var formData={username:'1234',password:'12345678',password2:'12345678'};
+    var result=validationService.signUp(formData);
+    expect(result.isValid).toBe(false);
   });
-  describe('password should be 8 characters minimum', function() {
-    it('less than 8 should not work', function() {
-      var $scope = {};
-      var controller = $controller('signUpController', {
-        $scope: $scope
-      });
-      $scope.username = '12345';
-      $scope.password = '12345';
-      $scope.register();
-      expect($scope.warning).toBe('Password should be 8 characters minimum');
-    });
-    it('greater than equal to 8 should work', function() {
-      var $scope = {};
-      var controller = $controller('signUpController', {
-        $scope: $scope
-      });
-      $scope.username = '12345';
-      $scope.password = '12345678';
-      $scope.password = '12345678';
-      $scope.register();
-      expect($scope.warning).not.toBe('Password should be 8 characters minimum');
-    });
+  it('if username is greater than equal to 5 characters', function() {
+    var formData={username:'12345',password:'12345678',password2:'12345678'};
+    var result=validationService.signUp(formData);
+    expect(result.isValid).toBe(true);
   });
-  describe('passwords should match', function() {
-    it('if passwords don\'t match show warning', function() {
-      var $scope = {};
-      var controller = $controller('signUpController', {
-        $scope: $scope
-      });
-      $scope.username='12345';
-      $scope.password = 'password';
-      $scope.password2 = 'password2';
-      $scope.register();
-      expect($scope.warning).toBe('Passwords don\'t match');
-    });
-    it('if passwords match good to go', function() {
-      var $scope = {};
-      var controller = $controller('signUpController', {
-        $scope: $scope
-      });
-      $scope.username='12345';
-      $scope.password = 'password';
-      $scope.password2 = 'password';
-      $scope.register();
-      expect($scope.warning).not.toBe('Passwords don\'t match');
-    });
+  it('if password is less than 8 characters', function() {
+    var formData={username:'12345',password:'1234567',password2:'12345678'};
+    var result=validationService.signUp(formData);
+    expect(result.isValid).toBe(false);
   });
+  it('if password is greater than equal to 8 characters', function() {
+    var formData={username:'12345',password:'12345678',password2:'12345678'};
+    var result=validationService.signUp(formData);
+    expect(result.isValid).toBe(true);
+  });
+  it('if password and password2 are not equal', function() {
+    var formData={username:'12345',password:'12345678',password2:'12345687'};
+    var result=validationService.signUp(formData);
+    expect(result.isValid).toBe(false);
+  });
+  it('if password and password2 are equal', function() {
+    var formData={username:'12345',password:'12345678',password2:'12345678'};
+    var result=validationService.signUp(formData);
+    expect(result.isValid).toBe(true);
+  });
+
 });

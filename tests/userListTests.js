@@ -43,7 +43,7 @@ describe('userListTests', function() {
 
 
   describe('handle user notif and unread counts', function() {
-    var ctrl, $scope, $rootScope, $controller;
+    var $scope, $rootScope, $controller;
     beforeEach(function() {
       inject(function(_$rootScope_, _$controller_) {
         $rootScope = _$rootScope_;
