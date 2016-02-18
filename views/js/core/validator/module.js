@@ -1,0 +1,1 @@
+var validator=angular.module('validator',[]);

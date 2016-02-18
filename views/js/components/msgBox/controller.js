@@ -102,7 +102,7 @@ msgBox.controller('msgBoxController', ['$scope', 'apiService', 'socketService', 
       $scope.count = {};
       var messages = data;
       _.each(_.reject(messages, {
-        from: me._id
+        from: $scope.me._id
       }), function(msg) {
         if (!msg.read) {
           $scope.$evalAsync(function() {

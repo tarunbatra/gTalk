@@ -22,7 +22,7 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
           $scope.active = u;
         })
         //retreive the peer entry of active user
-      var peer = _.findWhere(me.peers, {
+      var peer = _.findWhere($scope.me.peers, {
         peerid: u._id
       });
       //update code of active user
@@ -39,10 +39,8 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
       _.each($scope.users, function(user) {
         if (user._id != $scope.active._id) {
           user.unread = newVal[user._id] ? newVal[user._id] : 0;
-          if (user.unread > 1)
+          if (user.unread)
             notification.show('Unread Messages!', 'You have ' + user.unread + ' unread messages from ' + user.username);
-          else if (user.unread == 1)
-            notification.show('Unread Messages!', 'You have an unread message from ' + user.username);
         }
       });
     });
@@ -59,16 +57,13 @@ userList.controller('userListController', ['$scope', 'apiService', 'socketServic
           if ($scope.active._id != u._id) {
             u.notify = true;
           }
-          if (notification.userAway) {
-            notification.show('New Notification!', 'You have a new notification from ' + u.username);
-          }
-          //updating active user
-          if ($scope.active._id == u._id) {
+          else{
             $scope.active = u;
             if (data.code) {
               $scope.code = data.code;
             }
           }
+          notification.show('New Notification!', 'You have a new notification from ' + u.username);
         }
       });
     });
