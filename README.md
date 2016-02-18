@@ -5,14 +5,24 @@
 * Web Notifications
 * Requesting/Canceling/Accepting/Rejecting requests to chat
 
+## Demo
+[Click Here](http://52.77.211.80:3000)
+
+## Before Installation
+Install *mongodb* from official repository of your ditsribution.
+* Ubuntu : `sudo apt-get install mongodb`
+* Fedora : `sudo dnf install mongodb`
+
+(Sorry Windows users, find your own way)
+
 ## Installation
-> npm install
+`npm install`
 
 ## Usage
-> npm start
+`npm start`
 
 ## Test
-> npm test
+`npm test`
 
 ## License
-Apache 2.0
+> _Apache 2.0_
