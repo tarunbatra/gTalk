@@ -1,0 +1,6 @@
+module.exports = {
+  'database': 'mongodb://localhost/gtalkDB',
+  'port': env.PORT || 3000,
+  'secret': '$something!23',
+  'tokenTime': 86400
+};
