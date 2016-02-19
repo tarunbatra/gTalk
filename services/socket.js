@@ -30,7 +30,6 @@ module.exports = function(io) {
       //getting all users info and emitting to all
       user.getAll(function(err, userData) {
         if (err) console.log(err);
-        console.log(JSON.stringify(userData));
         io.emit('notification', {
           users: userData
         });
@@ -48,7 +47,6 @@ module.exports = function(io) {
       //getting all users info and emitting to all
       user.getAll(function(err, userData) {
         if (err) console.log(err);
-        console.log(JSON.stringify(userData));
         io.emit('notification', {
           users: userData
         });
