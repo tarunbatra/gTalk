@@ -1,5 +1,6 @@
-const responder = require('./../middlewares/responder');
 var express = require('express');
+var responder = require('./../middlewares/responder');
+
 var router = express.Router();
 
 router.use(function(req, res, next) {
