@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const config = require('./../config');
-const db = mongoose.connection;
+var mongoose = require('mongoose');
+var config = require('./../config');
+var db = mongoose.connection;
 module.exports = function() {
   mongoose.connect(config.database);
   db.on('error', function(err) {
