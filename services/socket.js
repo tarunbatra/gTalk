@@ -1,7 +1,8 @@
+var _ = require('underscore');
+
 var user = require('./../models/user');
 var message = require('./../models/messages');
 var responder = require('./../middlewares/responder');
-var _ = require('underscore');
 
 //object to store sockets - format : { _id : socket }
 var sockets = {};
@@ -21,14 +22,15 @@ module.exports = function(io) {
       //for personal msgs
       sockets[data._id] = socket;
       //sets user as online
-      user.setOnline({
+      user.setStatus({
         username: data.username
-      }, true, function(error) {
+      }, 'online', function(error) {
         if (error) console.log(error);
       });
       //getting all users info and emitting to all
       user.getAll(function(err, userData) {
         if (err) console.log(err);
+        console.log(JSON.stringify(userData));
         io.emit('notification', {
           users: userData
         });
@@ -38,14 +40,15 @@ module.exports = function(io) {
     //user goes offline
     socket.on('disconnection', function(data) {
       //sets user as offline
-      user.setOnline({
+      user.setStatus({
         username: data
-      }, false, function(error) {
+      }, 'offline', function(error) {
         if (error) console.log(error);
       });
       //getting all users info and emitting to all
       user.getAll(function(err, userData) {
         if (err) console.log(err);
+        console.log(JSON.stringify(userData));
         io.emit('notification', {
           users: userData
         });

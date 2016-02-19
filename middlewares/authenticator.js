@@ -1,6 +1,6 @@
-const responder = require('./responder');
-const jwt = require('jsonwebtoken');
-const config = require('./../config');
+var jwt = require('jsonwebtoken');
+var responder = require('./responder');
+var config = require('./../config');
 module.exports = function(req, res, next) {
   var t = req.body.token || req.query.token || req.headers['x-access-token'];
   if (t) {

@@ -19,7 +19,7 @@ var user = {
   },
 
   signIn: function(req, res, next) {
-    userDB.signIn({
+    userDB.getOneByUsername({
         username: req.body.username
       },
       function(err, data) {
