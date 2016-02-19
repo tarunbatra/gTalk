@@ -1,7 +1,12 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 var _ = require('underscore');
-var messages = require('./messages');
+var Schema = mongoose.Schema;
+
+//contants
+var REQUEST_ACCEPTED = 3;
+var REQUEST_RECEIVED = 2;
+var REQUEST_SENT = 1;
+
 var model = mongoose.model('users', new Schema({
   username: {
     type: String,
@@ -13,8 +18,9 @@ var model = mongoose.model('users', new Schema({
     type: String,
     required: true
   },
-  online: {
-    type: Boolean
+  status: {
+    type: 'String',
+    enum: ['online', 'offline']
   },
   peers: [{
     peerid: {
@@ -60,15 +66,6 @@ model.getOneById = function(id, cb) {
   });
 }
 
-model.signIn = function(data, cb) {
-  model.findOne({
-    username: data.username
-  }, {
-    __v: false
-  }, function(err, data) {
-    cb(err, data);
-  });
-};
 model.signUp = function(data, cb) {
   var u = new this(data);
   u.save(function(err) {
@@ -83,11 +80,9 @@ model.sendReq = function(data, cb) {
     $addToSet: {
       peers: {
         peerid: data.to,
-        status: 1
+        status: REQUEST_SENT
       }
     }
-  }, {
-    upsert: false
   }, function(error, userData) {
     if (!error) {
       model.findOneAndUpdate({
@@ -96,16 +91,14 @@ model.sendReq = function(data, cb) {
         $addToSet: {
           peers: {
             peerid: data.from,
-            status: 2
+            status: REQUEST_RECEIVED
           }
         }
-      }, {
-        upsert: false
       }, function(error, userData) {
-        if(error) console.log(error);
+        if (error) console.log(error);
       });
     }
-    cb(error,userData);
+    cb(error, userData);
   });
 };
 
@@ -129,7 +122,7 @@ model.cancelReq = function(data, cb) {
           }
         }
       }, function(rr) {
-        if (rr)console.log(rr);
+        if (rr) console.log(rr);
       });
     }
     cb(error);
@@ -143,7 +136,7 @@ model.acceptReq = function(data, cb) {
     'peers.peerid': data.to
   }, {
     $set: {
-      'peers.$.status': 3
+      'peers.$.status': REQUEST_ACCEPTED
     }
   }, function(err, userData) {
     if (!err) {
@@ -152,10 +145,10 @@ model.acceptReq = function(data, cb) {
         'peers.peerid': data.from
       }, {
         $set: {
-          'peers.$.status': 3
+          'peers.$.status': REQUEST_ACCEPTED
         }
       }, function(err) {
-        if(err)console.log(err);
+        if (err) console.log(err);
       });
     }
     cb(err);
@@ -182,22 +175,18 @@ model.rejectReq = function(data, cb) {
           }
         }
       }, function(error) {
-        if(error) console.log(error);
+        if (error) console.log(error);
       });
     }
     cb(error);
   });
 };
 
-model.setOnline = function(obj, onlineStatus, cb)
-
-{
+model.setStatus = function(obj, onlineStatus, cb) {
   model.findOneAndUpdate(obj, {
     $set: {
-      online: onlineStatus
+      status: onlineStatus
     }
-  }, {
-    upsert: false
   }, function(error, data) {
     cb(error);
   });
