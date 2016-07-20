@@ -48,8 +48,7 @@ model.getOneByUsername = function(uname, cb) {
   model.findOne({
     username: uname
   }, {
-    __v: false,
-    password: false
+    __v: false
   }, function(err, data) {
     cb(err, data);
   });
