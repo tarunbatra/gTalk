@@ -19,9 +19,7 @@ var user = {
   },
 
   signIn: function(req, res, next) {
-    userDB.getOneByUsername({
-        username: req.body.username
-      },
+    userDB.getOneByUsername( req.body.username,
       function(err, data) {
         if (err||!data) {
           responder(req, res, {msg:'Username doesn\'t exist'});
