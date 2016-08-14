@@ -6,7 +6,7 @@
 * Requesting/Canceling/Accepting/Rejecting requests to chat
 
 ## Demo
-[Click Here](http://52.77.211.80:3000)
+~~Click Here~~ Ran out of AWS credits
 
 ## Before Installation
 Install *mongodb* from official repository of your ditsribution.
